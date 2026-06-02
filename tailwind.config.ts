@@ -2,23 +2,23 @@ import type { Config } from 'tailwindcss'
 
 const config: Config = {
   content: [
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
         agro: {
-          green: '#22c55e',
-          'green-dark': '#16a34a',
+          green: '#16a34a',
+          'green-dark': '#15803d',
+          'green-light': '#22c55e',
           purple: '#7c3aed',
           'purple-light': '#a78bfa',
           gold: '#f59e0b',
-          dark: '#0f172a',
-          'dark-card': '#1e293b',
-          'dark-border': '#334155',
+          dark: '#060b14',
+          'dark-card': '#0d1726',
+          'dark-border': '#1e2d45',
         },
       },
       fontFamily: {
@@ -29,6 +29,8 @@ const config: Config = {
         'slide-up': 'slideUp 0.6s ease-out forwards',
         float: 'float 6s ease-in-out infinite',
         pulse2: 'pulse2 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        shimmer: 'shimmer 2s linear infinite',
+        'fade-up': 'fadeUp 0.7s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
@@ -46,6 +48,14 @@ const config: Config = {
         pulse2: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.5' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        fadeUp: {
+          from: { opacity: '0', transform: 'translateY(32px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
         },
       },
     },
