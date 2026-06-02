@@ -10,6 +10,7 @@ const links = [
   { label: 'Comparativa', href: '#comparativa' },
 ]
 
+
 export default function Navbar() {
   const [open, setOpen] = useState(false)
 
@@ -44,8 +45,8 @@ export default function Navbar() {
 
         {/* CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <a href="#waitlist" className="btn-primary text-sm !px-5 !py-2">
-            Lista de Espera
+          <a href="#comprar" className="btn-primary text-sm !px-5 !py-2">
+            Comprar AGRO
           </a>
         </div>
 
