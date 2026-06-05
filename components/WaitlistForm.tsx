@@ -1,5 +1,5 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
@@ -10,6 +10,13 @@ const ROLES = [
   { value: 'partner', label: 'Partner / Restaurante' },
   { value: 'otro', label: 'Otro' },
 ]
+
+const TIER_LABELS: Record<string, { emoji: string; label: string; color: string }> = {
+  semilla:   { emoji: '🌱', label: 'Semilla',   color: 'border-amber-500/40 bg-amber-900/10 text-amber-300' },
+  cosecha:   { emoji: '🌾', label: 'Cosecha',   color: 'border-slate-500/40 bg-slate-700/20 text-slate-300' },
+  funghi:    { emoji: '🍄', label: 'Funghi',    color: 'border-agro-gold/40 bg-yellow-900/10 text-agro-gold' },
+  arandanos: { emoji: '🫐', label: 'Arándanos', color: 'border-sky-500/40 bg-sky-900/10 text-sky-300' },
+}
 
 function sanitizeText(value: string, maxLen: number): string {
   return value.replace(/[<>"'`\\]/g, '').slice(0, maxLen)
@@ -23,20 +30,34 @@ export default function WaitlistForm() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [role, setRole] = useState('')
+  const [tier, setTier] = useState('')
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState('')
   const honeypot = useRef<HTMLInputElement>(null)
+
+  // Lee el tier del hash de la URL al montar
+  useEffect(() => {
+    const readTier = () => {
+      const hash = window.location.hash.replace('#waitlist', '').replace('?tier=', '')
+      const params = new URLSearchParams(window.location.search)
+      const t = params.get('tier') ?? hash.replace('?tier=', '')
+      if (t && TIER_LABELS[t]) setTier(t)
+    }
+    readTier()
+    window.addEventListener('hashchange', readTier)
+    return () => window.removeEventListener('hashchange', readTier)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
-    // Honeypot anti-spam
     if (honeypot.current?.value) return
 
     const cleanName = sanitizeText(name.trim(), 80)
     const cleanEmail = email.trim().toLowerCase().slice(0, 254)
     const cleanRole = ROLES.find((r) => r.value === role)?.value ?? ''
+    const cleanTier = TIER_LABELS[tier] ? tier : ''
 
     if (!cleanName || cleanName.length < 2) { setError('Ingresa tu nombre.'); return }
     if (!isValidEmail(cleanEmail)) { setError('Email inválido.'); return }
@@ -48,7 +69,7 @@ export default function WaitlistForm() {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: cleanName, email: cleanEmail, role: cleanRole }),
+        body: JSON.stringify({ name: cleanName, email: cleanEmail, role: cleanRole, tier: cleanTier }),
       })
 
       if (!res.ok) {
@@ -64,11 +85,19 @@ export default function WaitlistForm() {
     }
   }
 
+  const tierInfo = tier ? TIER_LABELS[tier] : null
+
   if (status === 'success') {
     return (
       <div className="text-center py-8">
-        <div className="text-5xl mb-4">🌱</div>
+        <div className="text-5xl mb-4">{tierInfo ? tierInfo.emoji : '🌱'}</div>
         <h3 className="text-2xl font-black text-white mb-2">¡Ya estás en la lista!</h3>
+        {tierInfo && (
+          <p className="text-sm font-bold mb-3" style={{ color: 'inherit' }}>
+            Membresía reservada:{' '}
+            <span className="text-agro-green">{tierInfo.emoji} {tierInfo.label}</span>
+          </p>
+        )}
         <p className="text-slate-400">Te notificamos cuando la presale esté abierta. Bienvenido al ecosistema AGROVIDA.</p>
       </div>
     )
@@ -87,6 +116,44 @@ export default function WaitlistForm() {
         className="sr-only"
       />
 
+      {/* Tier seleccionado */}
+      {tierInfo && (
+        <div className={`flex items-center gap-3 border rounded-xl px-4 py-3 ${tierInfo.color}`}>
+          <span className="text-2xl">{tierInfo.emoji}</span>
+          <div>
+            <p className="text-xs uppercase tracking-wider font-bold opacity-70">Membresía seleccionada</p>
+            <p className="font-black text-base">{tierInfo.label}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setTier('')}
+            className="ml-auto text-xs opacity-50 hover:opacity-100 underline"
+          >
+            cambiar
+          </button>
+        </div>
+      )}
+
+      {/* Selector de tier si no hay uno elegido */}
+      {!tierInfo && (
+        <div>
+          <label className="block text-sm text-slate-400 mb-2">Membresía de interés (opcional)</label>
+          <div className="grid grid-cols-2 gap-2">
+            {Object.entries(TIER_LABELS).map(([key, t]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setTier(key)}
+                className="flex items-center gap-2 bg-agro-dark border border-agro-dark-border hover:border-agro-purple rounded-xl px-3 py-2.5 text-sm text-slate-300 hover:text-white transition-all"
+              >
+                <span>{t.emoji}</span>
+                <span className="font-semibold">{t.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="grid sm:grid-cols-2 gap-4">
         <div>
           <label htmlFor="wl-name" className="block text-sm text-slate-400 mb-1.5">Nombre *</label>
@@ -98,7 +165,7 @@ export default function WaitlistForm() {
             placeholder="Tu nombre"
             maxLength={80}
             required
-            className="w-full bg-agro-dark border border-agro-dark-border rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-agro-green focus:ring-1 focus:ring-agro-green transition"
+            className="input-dark"
           />
         </div>
         <div>
@@ -111,7 +178,7 @@ export default function WaitlistForm() {
             placeholder="tu@email.com"
             maxLength={254}
             required
-            className="w-full bg-agro-dark border border-agro-dark-border rounded-xl px-4 py-3 text-white placeholder-slate-600 focus:outline-none focus:border-agro-green focus:ring-1 focus:ring-agro-green transition"
+            className="input-dark"
           />
         </div>
       </div>
@@ -123,7 +190,7 @@ export default function WaitlistForm() {
           value={role}
           onChange={(e) => setRole(e.target.value)}
           required
-          className="w-full bg-agro-dark border border-agro-dark-border rounded-xl px-4 py-3 text-white focus:outline-none focus:border-agro-green focus:ring-1 focus:ring-agro-green transition appearance-none"
+          className="input-dark appearance-none"
         >
           <option value="" disabled>Selecciona...</option>
           {ROLES.map((r) => (
@@ -141,7 +208,7 @@ export default function WaitlistForm() {
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
       >
         {status === 'loading' ? (
           <>
@@ -151,6 +218,8 @@ export default function WaitlistForm() {
             </svg>
             Registrando...
           </>
+        ) : tierInfo ? (
+          `Reservar ${tierInfo.emoji} ${tierInfo.label} →`
         ) : (
           'Reservar mi lugar →'
         )}

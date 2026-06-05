@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const ALLOWED_ROLES = new Set(['comprador', 'productor', 'inversor', 'partner', 'otro'])
+const ALLOWED_TIERS = new Set(['semilla', 'cosecha', 'funghi', 'arandanos', ''])
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) && email.length <= 254
@@ -58,11 +59,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Datos inválidos.' }, { status: 400 })
   }
 
-  const { name, email, role } = body as Record<string, unknown>
+  const { name, email, role, tier } = body as Record<string, unknown>
 
   const cleanName = sanitize(name, 80)
   const cleanEmail = sanitize(email, 254).toLowerCase()
   const cleanRole = sanitize(role, 20)
+  const cleanTier = sanitize(tier, 20).toLowerCase()
 
   // Validate
   if (!cleanName || cleanName.length < 2) {
@@ -74,6 +76,9 @@ export async function POST(req: NextRequest) {
   if (!ALLOWED_ROLES.has(cleanRole)) {
     return NextResponse.json({ message: 'Rol inválido.' }, { status: 422 })
   }
+  if (!ALLOWED_TIERS.has(cleanTier)) {
+    return NextResponse.json({ message: 'Membresía inválida.' }, { status: 422 })
+  }
 
   // TODO: persist to database (e.g. Supabase, PlanetScale, or Firebase)
   // For now, log server-side only (never exposed to client)
@@ -81,6 +86,7 @@ export async function POST(req: NextRequest) {
     name: cleanName,
     email: cleanEmail,
     role: cleanRole,
+    tier: cleanTier || 'sin-tier',
     registeredAt: new Date().toISOString(),
   })
 

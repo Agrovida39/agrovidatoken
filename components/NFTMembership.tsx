@@ -1,7 +1,10 @@
+'use client'
+
 const tiers = [
   {
     emoji: '🌱',
     name: 'Semilla',
+    slug: 'semilla',
     supply: '10,000 NFTs',
     discount: '10%',
     color: 'border-amber-600',
@@ -16,6 +19,7 @@ const tiers = [
   {
     emoji: '🌾',
     name: 'Cosecha',
+    slug: 'cosecha',
     supply: '1,000 NFTs',
     discount: '20%',
     color: 'border-slate-400',
@@ -31,6 +35,7 @@ const tiers = [
   {
     emoji: '🍄',
     name: 'Funghi',
+    slug: 'funghi',
     supply: '100 NFTs',
     discount: '30%',
     color: 'border-agro-gold',
@@ -48,6 +53,7 @@ const tiers = [
   {
     emoji: '🫐',
     name: 'Arándanos',
+    slug: 'arandanos',
     supply: '10 NFTs',
     discount: '40%',
     color: 'border-sky-400',
@@ -110,14 +116,19 @@ export default function NFTMembership() {
               </ul>
 
               <a
-                href="#waitlist"
+                href={`#waitlist?tier=${t.slug}`}
+                onClick={() => {
+                  const url = new URL(window.location.href)
+                  url.searchParams.set('tier', t.slug)
+                  window.history.replaceState(null, '', url)
+                }}
                 className={`block text-center text-sm font-semibold py-2.5 rounded-xl transition-all duration-200 ${
                   t.featured
                     ? 'bg-agro-gold text-black hover:bg-yellow-400'
                     : 'bg-agro-dark border border-agro-dark-border text-slate-300 hover:border-slate-500'
                 }`}
               >
-                Reservar →
+                Reservar {t.emoji} →
               </a>
             </div>
           ))}
