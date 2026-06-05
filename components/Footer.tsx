@@ -17,7 +17,7 @@ export default function Footer() {
           <a href="https://agrovidacol.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
             agrovidacol.com
           </a>
-          <a href="mailto:dev@agrovida.com" className="hover:text-white transition-colors">
+          <a href="mailto:contacto@agrovidatoken.com" className="hover:text-white transition-colors">
             Contacto
           </a>
         </div>
