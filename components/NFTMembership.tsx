@@ -1,7 +1,7 @@
 const tiers = [
   {
-    emoji: '🥉',
-    name: 'Bronze',
+    emoji: '🌱',
+    name: 'Semilla',
     supply: '10,000 NFTs',
     discount: '10%',
     color: 'border-amber-600',
@@ -14,8 +14,8 @@ const tiers = [
     ],
   },
   {
-    emoji: '🥈',
-    name: 'Silver',
+    emoji: '🌾',
+    name: 'Cosecha',
     supply: '1,000 NFTs',
     discount: '20%',
     color: 'border-slate-400',
@@ -29,8 +29,8 @@ const tiers = [
     ],
   },
   {
-    emoji: '🥇',
-    name: 'Gold',
+    emoji: '☕',
+    name: 'Café',
     supply: '100 NFTs',
     discount: '30%',
     color: 'border-agro-gold',
@@ -46,8 +46,8 @@ const tiers = [
     featured: true,
   },
   {
-    emoji: '💎',
-    name: 'Platinum',
+    emoji: '🍫',
+    name: 'Cacao',
     supply: '10 NFTs',
     discount: '40%',
     color: 'border-sky-400',
