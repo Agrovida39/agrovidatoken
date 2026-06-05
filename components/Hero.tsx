@@ -26,22 +26,23 @@ export default function Hero() {
 
         {/* Eyebrow */}
         <p className="text-agro-green font-bold text-sm uppercase tracking-widest mb-4">
-          El Amazon de Salud & Bienestar para Latinoamérica
+          🫐 Nacido en Colombia · El Amazon de Salud & Bienestar para LatAm
         </p>
 
         {/* Headline */}
         <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
-          Más que un Token.{' '}
+          Del Arándano{' '}
           <br />
-          <span className="gradient-text">Un Super-Ecosistema</span>
+          <span className="gradient-text">al Super-Ecosistema</span>
           <br />
           de Salud & Bienestar
         </h1>
 
         <p className="text-slate-400 text-lg sm:text-xl max-w-3xl mx-auto mb-10 leading-relaxed">
-          <strong className="text-white">AGROVIDA</strong> conecta alimentos saludables,
-          suplementos premium, membresías wellness y servicios de salud —
-          todo pagado y recompensado en <strong className="text-agro-green">AGRO</strong>.{' '}
+          <strong className="text-white">AGROVIDA</strong> nació del cultivo de arándanos colombianos
+          y creció hasta conectar alimentos saludables, hongos medicinales,
+          suplementos premium y servicios de salud —
+          todo pagado y recompensado en <strong className="text-agro-green">Token AGROVIDA</strong>.{' '}
           Mercado objetivo: <strong className="text-white">$100B+</strong> en LatAm.
         </p>
 
@@ -59,7 +60,7 @@ export default function Hero() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto">
           {[
             { icon: <ShoppingBag size={18} className="text-agro-green" />, value: '$100B+', label: 'TAM LatAm' },
-            { icon: <Leaf size={18} className="text-agro-purple-light" />, value: '1B AGRO', label: 'Supply Total' },
+            { icon: <Leaf size={18} className="text-agro-purple-light" />, value: '1B AGROVIDA', label: 'Supply Total' },
             { icon: <TrendingUp size={18} className="text-agro-gold" />, value: '15% APY', label: 'Staking Máx.' },
             { icon: <Users size={18} className="text-sky-400" />, value: '5M+', label: 'Usuarios Objetivo Y3' },
           ].map((s) => (

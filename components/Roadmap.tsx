@@ -144,7 +144,7 @@ export default function Roadmap() {
               </thead>
               <tbody>
                 {[
-                  { label: 'Precio AGRO', y1: '$0.75', y2: '$2.50', y3: '$5–10' },
+                  { label: 'Precio AGROVIDA', y1: '$0.75', y2: '$2.50', y3: '$5–10' },
                   { label: 'Market Cap', y1: '$750M', y2: '$2.5B', y3: '$5–10B' },
                   { label: 'Usuarios Activos', y1: '200K', y2: '1M', y3: '3–5M' },
                   { label: 'GMV', y1: '$100M', y2: '$500M', y3: '$1.5B' },

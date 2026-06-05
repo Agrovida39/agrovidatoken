@@ -29,8 +29,8 @@ const tiers = [
     ],
   },
   {
-    emoji: '☕',
-    name: 'Café',
+    emoji: '🍄',
+    name: 'Funghi',
     supply: '100 NFTs',
     discount: '30%',
     color: 'border-agro-gold',
@@ -46,8 +46,8 @@ const tiers = [
     featured: true,
   },
   {
-    emoji: '🍫',
-    name: 'Cacao',
+    emoji: '🫐',
+    name: 'Arándanos',
     supply: '10 NFTs',
     discount: '40%',
     color: 'border-sky-400',

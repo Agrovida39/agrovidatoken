@@ -8,7 +8,7 @@ const distribution = [
 ]
 
 const metrics = [
-  { label: 'Supply Total', value: '1B AGRO' },
+  { label: 'Supply Total', value: '1B AGROVIDA' },
   { label: 'Precio ICO', value: '$0.05–$0.10' },
   { label: 'Objetivo Presale', value: '$50–75M' },
   { label: 'Market Cap Año 3', value: '$5–10B' },
@@ -36,7 +36,7 @@ export default function Tokenomics() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <span className="text-agro-green text-sm font-semibold uppercase tracking-widest">Tokenomics</span>
-          <h2 className="text-4xl font-black text-white mt-2 mb-4">Economía del Token AGRO</h2>
+          <h2 className="text-4xl font-black text-white mt-2 mb-4">Economía del Token AGROVIDA</h2>
           <p className="text-slate-400 max-w-xl mx-auto">
             Diseñado para deflación sostenida: múltiples mecanismos de burn + utilidad real en marketplace, membresías y governance.
           </p>
@@ -92,7 +92,7 @@ export default function Tokenomics() {
                 </div>
               ))}
               <div className="border-t border-agro-dark-border pt-3 text-xs text-slate-500">
-                Proyección: ~500M AGRO activos después de 5 años (50% supply quemado)
+                Proyección: ~500M AGROVIDA activos después de 5 años (50% supply quemado)
               </div>
             </div>
           </div>
@@ -115,7 +115,7 @@ export default function Tokenomics() {
 
         {/* Regulatory note */}
         <div className="mt-8 bg-agro-gold/10 border border-agro-gold/30 rounded-xl p-4 text-agro-gold text-sm">
-          <strong>Nota regulatoria:</strong> AGRO es clasificado como token de utilidad (acceso a servicios del ecosistema AGROVIDA), no como instrumento de inversión. Requiere asesoría legal crypto y cumplimiento regulatorio antes de cualquier oferta pública en Colombia, México, USA y demás jurisdicciones.
+          <strong>Nota regulatoria:</strong> AGROVIDA es clasificado como token de utilidad (acceso a servicios del ecosistema AGROVIDA), no como instrumento de inversión. Requiere asesoría legal crypto y cumplimiento regulatorio antes de cualquier oferta pública en Colombia, México, USA y demás jurisdicciones.
         </div>
       </div>
     </section>

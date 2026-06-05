@@ -10,7 +10,7 @@ export default function Footer() {
         </div>
 
         <p className="text-xs text-center max-w-md text-slate-600">
-          AGRO es un token de utilidad. No constituye una oferta de valores. Consulta asesoría legal antes de participar. Cumplimiento regulatorio es responsabilidad del usuario según su jurisdicción.
+          AGROVIDA es un token de utilidad. No constituye una oferta de valores. Consulta asesoría legal antes de participar. Cumplimiento regulatorio es responsabilidad del usuario según su jurisdicción.
         </p>
 
         <div className="flex gap-4">

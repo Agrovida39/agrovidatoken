@@ -4,7 +4,7 @@ import { Wallet, AlertCircle, CheckCircle2, Loader2, ArrowRight, ShieldCheck } f
 
 const PRESALE_ADDRESS = '0x0000000000000000000000000000000000000000' // reemplazar al desplegar
 const POLYGON_CHAIN_ID = '0x89' // 137 decimal
-const RATE = 1000 // 1 MATIC = 1000 AGRO
+const RATE = 1000 // 1 MATIC = 1000 AGROVIDA
 const MIN_MATIC = 0.1
 const MAX_MATIC = 1000
 
@@ -119,10 +119,10 @@ export default function BuySection() {
             <span className="pulse-dot" /> Presale Activa
           </span>
           <h2 className="section-title text-4xl sm:text-5xl text-white mt-3">
-            Compra <span className="gradient-text">AGRO</span> Ahora
+            Compra <span className="gradient-text">AGROVIDA</span> Ahora
           </h2>
           <p className="text-slate-400 mt-4 max-w-xl mx-auto">
-            Precio de presale: <strong className="text-white">1 MATIC = {RATE.toLocaleString()} AGRO</strong>.
+            Precio de presale: <strong className="text-white">1 MATIC = {RATE.toLocaleString()} AGROVIDA</strong>.
             Red Polygon. Solo MetaMask.
           </p>
         </div>
@@ -168,7 +168,7 @@ export default function BuySection() {
 
                 <div className="bg-agro-dark rounded-xl px-4 py-3 mb-6 flex items-center justify-between border border-agro-dark-border">
                   <span className="text-slate-400 text-sm">Recibirás</span>
-                  <span className="text-agro-green font-black text-lg">{agro} AGRO</span>
+                  <span className="text-agro-green font-black text-lg">{agro} AGROVIDA</span>
                 </div>
 
                 <button
@@ -178,7 +178,7 @@ export default function BuySection() {
                 >
                   {step === 'buying'
                     ? <><Loader2 size={18} className="animate-spin" /> Procesando…</>
-                    : <>Comprar AGRO <ArrowRight size={18} /></>}
+                    : <>Comprar AGROVIDA <ArrowRight size={18} /></>}
                 </button>
               </>
             )}

@@ -6,8 +6,8 @@ const loops = [
     border: 'border-agro-green',
     steps: [
       'Usuario compra alimento saludable',
-      'Paga en AGRO → 20% descuento',
-      'Demanda de AGRO sube',
+      'Paga en AGROVIDA → 20% descuento',
+      'Demanda de AGROVIDA sube',
       'Precio del token sube',
     ],
   },
@@ -17,9 +17,9 @@ const loops = [
     color: 'text-agro-purple-light',
     border: 'border-agro-purple',
     steps: [
-      '1M usuarios pagan $100/año en AGRO',
-      '100M AGRO anuales de demanda',
-      'AGRO necesario para renovar año 2',
+      '1M usuarios pagan $100/año en AGROVIDA',
+      '100M AGROVIDA anuales de demanda',
+      'AGROVIDA necesario para renovar año 2',
       'Escasez ↑ → Precio ↑',
     ],
   },
@@ -31,8 +31,8 @@ const loops = [
     steps: [
       '5M usuarios → datos de salud anónimos',
       'Venta de insights a pharma / research',
-      'Ganancias → recompra AGRO en mercado',
-      'AGRO comprado → quemado → deflación',
+      'Ganancias → recompra AGROVIDA en mercado',
+      'AGROVIDA comprado → quemado → deflación',
     ],
   },
   {
@@ -42,7 +42,7 @@ const loops = [
     border: 'border-agro-gold',
     steps: [
       '10K terceros venden en Agrovida',
-      'Pagan comisiones en AGRO',
+      'Pagan comisiones en AGROVIDA',
       'Demanda constante de terceros',
       'Token utility ↑ → precio floor ↑',
     ],
@@ -54,9 +54,9 @@ const loops = [
     border: 'border-pink-500',
     steps: [
       'DAO propone nuevos productos',
-      'Holders votan (min. 1,000 AGRO)',
+      'Holders votan (min. 1,000 AGROVIDA)',
       'Producto ganador se integra',
-      'Holders se benefician → acumulan más AGRO',
+      'Holders se benefician → acumulan más AGROVIDA',
     ],
   },
 ]
@@ -69,7 +69,7 @@ export default function ValueLoops() {
           <span className="text-agro-green text-sm font-semibold uppercase tracking-widest">Tokenomics en Acción</span>
           <h2 className="text-4xl font-black text-white mt-2 mb-4">5 Loops de Valor del Ecosistema</h2>
           <p className="text-slate-400 max-w-xl mx-auto">
-            Cada actividad en el ecosistema genera demanda de AGRO. Los loops se refuerzan entre sí creando un volante económico sostenible.
+            Cada actividad en el ecosistema genera demanda del Token AGROVIDA. Los loops se refuerzan entre sí creando un volante económico sostenible.
           </p>
         </div>
 
@@ -98,7 +98,7 @@ export default function ValueLoops() {
               Resultado
             </p>
             <p className="text-slate-300 text-sm leading-relaxed mb-4">
-              5 fuentes independientes de demanda de AGRO + deflación continua = presión alcista estructural sobre el precio del token.
+              5 fuentes independientes de demanda de Token AGROVIDA + deflación continua = presión alcista estructural sobre el precio.
             </p>
             <div className="space-y-2 text-sm">
               {[

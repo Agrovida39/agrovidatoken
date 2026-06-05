@@ -21,7 +21,7 @@ const categories = [
     title: 'Wellness & Servicios',
     icon: '🧬',
     color: 'border-agro-gold',
-    items: ['Membresías NFT (Bronze → Platinum)', 'Consultas con nutricionistas', 'Planes de nutrición con IA', 'Kit de prueba genética (Gold+)', 'Integración Oura / Apple Health'],
+    items: ['Membresías NFT (Semilla → Arándanos)', 'Consultas con nutricionistas', 'Planes de nutrición con IA', 'Kit de prueba genética (Funghi+)', 'Integración Oura / Apple Health'],
   },
 ]
 
@@ -29,31 +29,31 @@ const actors = [
   {
     icon: '🛒',
     role: 'Cliente Final',
-    flow: 'Compra alimentos → recibe 10% en AGRO → hace staking → vota en DAO',
+    flow: 'Compra alimentos → recibe 10% en AGROVIDA → hace staking → vota en DAO',
     color: 'text-agro-green',
   },
   {
     icon: '🌾',
     role: 'Productor Agrícola',
-    flow: 'Vende cosecha → pago instantáneo en AGRO → accede a crédito DeFi',
+    flow: 'Vende cosecha → pago instantáneo en AGROVIDA → accede a crédito DeFi',
     color: 'text-agro-purple-light',
   },
   {
     icon: '🚴',
     role: 'Delivery Partner',
-    flow: 'Entrega pedidos → gana AGRO → descuento en comisiones → seguros DeFi',
+    flow: 'Entrega pedidos → gana AGROVIDA → descuento en comisiones → seguros DeFi',
     color: 'text-agro-gold',
   },
   {
     icon: '🏪',
     role: 'Restaurante / B2B',
-    flow: 'Compra en volumen → 10% descuento en AGRO → vota en decisiones de producto',
+    flow: 'Compra en volumen → 10% descuento en AGROVIDA → vota en decisiones de producto',
     color: 'text-sky-400',
   },
   {
     icon: '🏥',
     role: 'Médico / Nutricionista',
-    flow: 'Prescribe productos Agrovida → gana comisión en AGRO → crea contenido de salud',
+    flow: 'Prescribe productos Agrovida → gana comisión en AGROVIDA → crea contenido de salud',
     color: 'text-pink-400',
   },
   {
@@ -74,7 +74,7 @@ export default function UseCases() {
             Un Marketplace para Todo el Ecosistema
           </h2>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            200+ productos en 4 categorías. 6 tipos de actores que generan demanda de AGRO en cada transacción.
+            200+ productos en 4 categorías. 6 tipos de actores que generan demanda de Token AGROVIDA en cada transacción.
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export default function UseCases() {
 
         {/* Actors */}
         <div className="mb-4">
-          <h3 className="text-white font-bold text-xl mb-6 text-center">¿Quién usa AGRO?</h3>
+          <h3 className="text-white font-bold text-xl mb-6 text-center">¿Quién usa el Token AGROVIDA?</h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {actors.map((a) => (
               <div

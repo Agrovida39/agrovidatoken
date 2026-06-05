@@ -2,7 +2,7 @@ const rows = [
   { feature: 'Especialización en salud', agrovida: true, amazon: false, iherb: 'Parcial', super: false },
   { feature: 'Producción local LatAm', agrovida: true, amazon: false, iherb: false, super: 'Parcial' },
   { feature: 'Alimentos + Suplementos + Servicios', agrovida: true, amazon: 'Parcial', iherb: false, super: false },
-  { feature: 'Pagos crypto / AGRO', agrovida: true, amazon: false, iherb: false, super: false },
+  { feature: 'Pagos crypto / Token AGROVIDA', agrovida: true, amazon: false, iherb: false, super: false },
   { feature: 'Membresías con descuento', agrovida: true, amazon: 'Prime', iherb: false, super: 'Loyalty' },
   { feature: 'DAO Governance', agrovida: true, amazon: false, iherb: false, super: false },
   { feature: 'Health dashboard + AI', agrovida: true, amazon: false, iherb: false, super: false },
@@ -71,7 +71,7 @@ export default function MarketComparison() {
         <div className="mt-10 grid sm:grid-cols-2 gap-5">
           <div className="bg-agro-dark-card border border-agro-dark-border rounded-2xl p-6">
             <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Modelo Anterior</p>
-            <h3 className="text-white font-black text-xl mb-1">Agro Token (22 productos)</h3>
+            <h3 className="text-white font-black text-xl mb-1">Token AGROVIDA v1 (22 productos)</h3>
             <div className="space-y-1 text-sm text-slate-400 mt-3">
               <div>TAM: <span className="text-white font-medium">$10B</span></div>
               <div>Market cap objetivo: <span className="text-white font-medium">$500M–$1B</span></div>

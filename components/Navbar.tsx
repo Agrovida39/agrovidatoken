@@ -46,7 +46,7 @@ export default function Navbar() {
         {/* CTA */}
         <div className="hidden md:flex items-center gap-3">
           <a href="#comprar" className="btn-primary text-sm !px-5 !py-2">
-            Comprar AGRO
+            Comprar AGROVIDA
           </a>
         </div>
 
