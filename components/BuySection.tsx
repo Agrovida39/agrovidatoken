@@ -193,7 +193,7 @@ export default function BuySection() {
         <div className="text-center mb-14">
           <span className="badge-green mb-4"><span className="pulse-dot" /> Presale Activa</span>
           <h2 className="section-title text-2xl sm:text-4xl lg:text-5xl text-white mt-3">
-            Compra <span className="gradient-text">AGROVIDA</span> Ahora
+            Compra <span className="gradient-text">AGROVIDATOKEN</span> Ahora
           </h2>
           <p className="text-slate-400 mt-4 max-w-xl mx-auto">
             <strong className="text-white">1 MATIC = {RATE_MATIC.toLocaleString()} AGROVIDA</strong>
