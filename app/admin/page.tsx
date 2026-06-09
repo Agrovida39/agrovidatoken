@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSession, signIn, signOut } from 'next-auth/react'
 
+const ADMIN_EMAIL        = 'sumaproyect19@gmail.com'
 const ADMIN_PASSWORD_KEY = 'agrovida_admin_pw'
 const DEFAULT_PASSWORD   = '123456789'
 
@@ -91,7 +92,7 @@ function fromHex18Float(hex: string): string {
   if (!hex || hex === '0x') return '0'
   const val = BigInt(hex)
   const whole = val / BigInt(1e18)
-  const dec = (val % BigInt(1e18)) * 100n / BigInt(1e18)
+  const dec = (val % BigInt(1e18)) * BigInt(100) / BigInt(1e18)
   return `${whole.toLocaleString()}.${dec.toString().padStart(2,'0')}`
 }
 
