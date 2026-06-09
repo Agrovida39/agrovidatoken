@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
-const ADMIN_PASSWORD = 'agrovida2027'
+const ADMIN_EMAIL    = 'sumaproyect19@gmail.com'
+const ADMIN_PASSWORD_KEY = 'agrovida_admin_pw'
+const DEFAULT_PASSWORD   = '123456789'
 
 const PRESALE_ADDRESS  = '0xF516f7078d13984651fBE3Fb75A9A0ff0bfd6679'
 const AGROVIDA_ADDRESS = '0xfb172a5f2dd76eA03D225e78CfCC2f21773aEDf5'
@@ -106,8 +108,9 @@ interface Stats {
 
 export default function AdminPage() {
   const [authed, setAuthed]     = useState(false)
+  const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
-  const [pwError, setPwError]   = useState(false)
+  const [pwError, setPwError]   = useState('')
   const [stats, setStats]       = useState<Stats | null>(null)
   const [loading, setLoading]   = useState(false)
   const [txStatus, setTxStatus] = useState('')
@@ -115,6 +118,12 @@ export default function AdminPage() {
   const [walletAddress, setWalletAddress]     = useState('')
   const [newRateMatic, setNewRateMatic] = useState('')
   const [newRateUsdt, setNewRateUsdt]   = useState('')
+  // Cambiar contraseña
+  const [showChangePw, setShowChangePw]   = useState(false)
+  const [currentPw, setCurrentPw]         = useState('')
+  const [newPw, setNewPw]                 = useState('')
+  const [confirmPw, setConfirmPw]         = useState('')
+  const [changePwMsg, setChangePwMsg]     = useState('')
 
   const fetchStats = useCallback(async () => {
     setLoading(true)
@@ -177,28 +186,63 @@ export default function AdminPage() {
     }
   }
 
+  function getStoredPassword(): string {
+    if (typeof window === 'undefined') return DEFAULT_PASSWORD
+    return localStorage.getItem(ADMIN_PASSWORD_KEY) || DEFAULT_PASSWORD
+  }
+
   function login() {
-    if (password === ADMIN_PASSWORD) { setAuthed(true); setPwError(false) }
-    else setPwError(true)
+    if (email.trim().toLowerCase() !== ADMIN_EMAIL) {
+      setPwError('Correo no autorizado')
+      return
+    }
+    if (password !== getStoredPassword()) {
+      setPwError('Contraseña incorrecta')
+      return
+    }
+    setAuthed(true)
+    setPwError('')
+  }
+
+  function changePassword() {
+    if (currentPw !== getStoredPassword()) { setChangePwMsg('❌ Contraseña actual incorrecta'); return }
+    if (newPw.length < 8) { setChangePwMsg('❌ Mínimo 8 caracteres'); return }
+    if (newPw !== confirmPw) { setChangePwMsg('❌ Las contraseñas no coinciden'); return }
+    localStorage.setItem(ADMIN_PASSWORD_KEY, newPw)
+    setChangePwMsg('✅ Contraseña actualizada')
+    setCurrentPw(''); setNewPw(''); setConfirmPw('')
+    setTimeout(() => { setShowChangePw(false); setChangePwMsg('') }, 2000)
   }
 
   if (!authed) return (
     <div className="min-h-screen bg-[#060b14] flex items-center justify-center px-4">
       <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-8 w-full max-w-sm">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-600 to-purple-600 flex items-center justify-center text-white font-black text-sm">A</div>
-          <span className="font-bold text-white">AGROVIDA <span className="text-green-500">Admin</span></span>
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-600 to-purple-600 flex items-center justify-center text-white font-black">A</div>
+          <div>
+            <p className="font-bold text-white">AGROVIDA Admin</p>
+            <p className="text-slate-500 text-xs">Panel de Control</p>
+          </div>
         </div>
-        <p className="text-slate-400 text-sm mb-4">Ingresa la contraseña de administrador</p>
-        <input
-          type="password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && login()}
-          placeholder="Contraseña"
-          className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600 mb-3"
-        />
-        {pwError && <p className="text-red-400 text-xs mb-3">Contraseña incorrecta</p>}
+        <div className="space-y-3 mb-4">
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && login()}
+            placeholder="Correo electrónico"
+            className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && login()}
+            placeholder="Contraseña"
+            className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+          />
+        </div>
+        {pwError && <p className="text-red-400 text-xs mb-3">{pwError}</p>}
         <button onClick={login} className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition-colors">
           Ingresar
         </button>
@@ -221,6 +265,9 @@ export default function AdminPage() {
           }
           <button onClick={fetchStats} className="text-xs text-slate-400 hover:text-white border border-[#1e2d45] px-3 py-1.5 rounded-lg transition-colors">
             {loading ? '⏳' : '🔄'} Actualizar
+          </button>
+          <button onClick={() => setShowChangePw(true)} className="text-xs text-slate-400 hover:text-white border border-[#1e2d45] px-3 py-1.5 rounded-lg transition-colors">
+            🔑 Cambiar clave
           </button>
           <button onClick={() => setAuthed(false)} className="text-xs text-slate-500 hover:text-red-400 transition-colors">Salir</button>
         </div>
@@ -375,6 +422,49 @@ export default function AdminPage() {
         </div>
 
       </div>
+
+      {/* Modal cambiar contraseña */}
+      {showChangePw && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4">
+          <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-8 w-full max-w-sm">
+            <h3 className="text-white font-bold mb-5">🔑 Cambiar Contraseña</h3>
+            <div className="space-y-3 mb-4">
+              <input
+                type="password"
+                value={currentPw}
+                onChange={e => setCurrentPw(e.target.value)}
+                placeholder="Contraseña actual"
+                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+              />
+              <input
+                type="password"
+                value={newPw}
+                onChange={e => setNewPw(e.target.value)}
+                placeholder="Nueva contraseña (mín. 8 caracteres)"
+                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+              />
+              <input
+                type="password"
+                value={confirmPw}
+                onChange={e => setConfirmPw(e.target.value)}
+                placeholder="Confirmar nueva contraseña"
+                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+              />
+            </div>
+            {changePwMsg && (
+              <p className={`text-xs mb-3 ${changePwMsg.startsWith('✅') ? 'text-green-400' : 'text-red-400'}`}>{changePwMsg}</p>
+            )}
+            <div className="flex gap-3">
+              <button onClick={changePassword} className="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition-colors text-sm">
+                Guardar
+              </button>
+              <button onClick={() => { setShowChangePw(false); setChangePwMsg('') }} className="flex-1 bg-[#060b14] border border-[#1e2d45] text-slate-400 hover:text-white font-bold py-3 rounded-xl transition-colors text-sm">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
