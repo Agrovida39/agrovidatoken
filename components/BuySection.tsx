@@ -3,7 +3,7 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { Wallet, AlertCircle, CheckCircle2, Loader2, ArrowRight, ShieldCheck } from 'lucide-react'
 import type { MetaMaskSDK as MetaMaskSDKType } from '@metamask/sdk'
 
-const PRESALE_ADDRESS = '0x0000000000000000000000000000000000000000' // reemplazar al desplegar
+const PRESALE_ADDRESS = '0xF516f7078d13984651fBE3Fb75A9A0ff0bfd6679'
 const USDT_ADDRESS    = '0xc2132D05D31c914a87C6611C10748AEb04B58e8F' // USDT en Polygon
 const POLYGON_CHAIN_ID = '0x89'
 
