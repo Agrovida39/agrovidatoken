@@ -1,0 +1,380 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+
+const ADMIN_PASSWORD = 'agrovida2027'
+
+const PRESALE_ADDRESS  = '0xF516f7078d13984651fBE3Fb75A9A0ff0bfd6679'
+const AGROVIDA_ADDRESS = '0xfb172a5f2dd76eA03D225e78CfCC2f21773aEDf5'
+const USDT_ADDRESS     = '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
+const OWNER_ADDRESS    = '0xBDfB4c5724097c8CD9e7A31900d8dF546fb28f98'
+const POLYGON_RPC      = 'https://polygon-rpc.com'
+
+// ABI mínimo necesario
+const PRESALE_ABI = [
+  { name: 'totalSold',      type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+  { name: 'presaleOpen',    type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'bool' }] },
+  { name: 'rateMatic',      type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+  { name: 'rateUsdt',       type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+  { name: 'remainingTokens',type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
+  { name: 'withdrawMatic',  type: 'function', stateMutability: 'nonpayable', inputs: [{ name: 'to', type: 'address' }], outputs: [] },
+  { name: 'withdrawUSDT',   type: 'function', stateMutability: 'nonpayable', inputs: [{ name: 'to', type: 'address' }], outputs: [] },
+  { name: 'setPresaleOpen', type: 'function', stateMutability: 'nonpayable', inputs: [{ name: '_open', type: 'bool' }], outputs: [] },
+  { name: 'setRates',       type: 'function', stateMutability: 'nonpayable', inputs: [{ name: '_rateMatic', type: 'uint256' }, { name: '_rateUsdt', type: 'uint256' }], outputs: [] },
+  { name: 'pause',          type: 'function', stateMutability: 'nonpayable', inputs: [], outputs: [] },
+  { name: 'unpause',        type: 'function', stateMutability: 'nonpayable', inputs: [] , outputs: [] },
+]
+
+function encodeCall(sig: string, types: string[], values: (string | boolean | bigint)[]): string {
+  const selector = sig.slice(0, 10)
+  let encoded = selector
+  for (let i = 0; i < types.length; i++) {
+    const v = values[i]
+    if (types[i] === 'address') {
+      encoded += (v as string).toLowerCase().replace('0x','').padStart(64,'0')
+    } else if (types[i] === 'bool') {
+      encoded += (v ? '1' : '0').padStart(64,'0')
+    } else if (types[i] === 'uint256') {
+      encoded += BigInt(v as string).toString(16).padStart(64,'0')
+    }
+  }
+  return encoded
+}
+
+// Keccak4-byte selectors precalculados
+const SIG = {
+  totalSold:       '0xe4849b32',
+  presaleOpen:     '0x5d86dde1',
+  rateMatic:       '0x6f610d82',
+  rateUsdt:        '0x174439f7',
+  remainingTokens: '0x722b62ad',
+  withdrawMatic:   '0x5e35359e',
+  withdrawUSDT:    '0x0fb5a6b4',
+  setPresaleOpen:  '0xd7a6c22d',
+  setRates:        '0x2b74c0d3',
+  pause:           '0x8456cb59',
+  unpause:         '0x3f4ba83a',
+  balanceOf:       '0x70a08231',
+}
+
+async function rpcCall(method: string, params: unknown[]) {
+  const res = await fetch(POLYGON_RPC, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+  })
+  const json = await res.json()
+  return json.result
+}
+
+async function ethCall(to: string, data: string) {
+  return rpcCall('eth_call', [{ to, data }, 'latest'])
+}
+
+function fromHex18(hex: string): string {
+  if (!hex || hex === '0x') return '0'
+  const val = BigInt(hex)
+  const whole = val / BigInt(1e18)
+  return whole.toLocaleString()
+}
+
+function fromHex6(hex: string): string {
+  if (!hex || hex === '0x') return '0'
+  const val = BigInt(hex)
+  const whole = val / BigInt(1e6)
+  return whole.toLocaleString()
+}
+
+function fromHex18Float(hex: string): string {
+  if (!hex || hex === '0x') return '0'
+  const val = BigInt(hex)
+  const whole = val / BigInt(1e18)
+  const dec = (val % BigInt(1e18)) * 100n / BigInt(1e18)
+  return `${whole.toLocaleString()}.${dec.toString().padStart(2,'0')}`
+}
+
+interface Stats {
+  totalSold: string
+  remaining: string
+  presaleOpen: boolean
+  rateMatic: string
+  rateUsdt: string
+  maticBalance: string
+  usdtBalance: string
+  ownerMatic: string
+}
+
+export default function AdminPage() {
+  const [authed, setAuthed]     = useState(false)
+  const [password, setPassword] = useState('')
+  const [pwError, setPwError]   = useState(false)
+  const [stats, setStats]       = useState<Stats | null>(null)
+  const [loading, setLoading]   = useState(false)
+  const [txStatus, setTxStatus] = useState('')
+  const [walletConnected, setWalletConnected] = useState(false)
+  const [walletAddress, setWalletAddress]     = useState('')
+  const [newRateMatic, setNewRateMatic] = useState('')
+  const [newRateUsdt, setNewRateUsdt]   = useState('')
+
+  const fetchStats = useCallback(async () => {
+    setLoading(true)
+    try {
+      const [totalSoldHex, remainingHex, openHex, rateMaticHex, rateUsdtHex, maticBalHex, usdtBalHex, ownerMaticHex] = await Promise.all([
+        ethCall(PRESALE_ADDRESS, SIG.totalSold),
+        ethCall(PRESALE_ADDRESS, SIG.remainingTokens),
+        ethCall(PRESALE_ADDRESS, SIG.presaleOpen),
+        ethCall(PRESALE_ADDRESS, SIG.rateMatic),
+        ethCall(PRESALE_ADDRESS, SIG.rateUsdt),
+        rpcCall('eth_getBalance', [PRESALE_ADDRESS, 'latest']),
+        ethCall(USDT_ADDRESS, SIG.balanceOf + PRESALE_ADDRESS.toLowerCase().replace('0x','').padStart(64,'0')),
+        rpcCall('eth_getBalance', [OWNER_ADDRESS, 'latest']),
+      ])
+      setStats({
+        totalSold:   fromHex18(totalSoldHex),
+        remaining:   fromHex18(remainingHex),
+        presaleOpen: openHex !== '0x' + '0'.repeat(64),
+        rateMatic:   BigInt(rateMaticHex || '0x0').toString(),
+        rateUsdt:    BigInt(rateUsdtHex  || '0x0').toString(),
+        maticBalance: fromHex18Float(maticBalHex),
+        usdtBalance:  fromHex6(usdtBalHex),
+        ownerMatic:   fromHex18Float(ownerMaticHex),
+      })
+    } catch(e) {
+      console.error(e)
+    }
+    setLoading(false)
+  }, [])
+
+  useEffect(() => {
+    if (authed) fetchStats()
+  }, [authed, fetchStats])
+
+  async function connectWallet() {
+    const eth = (window as unknown as { ethereum?: { request: (a: { method: string; params?: unknown[] }) => Promise<unknown> } }).ethereum
+    if (!eth) { setTxStatus('MetaMask no detectado'); return }
+    const accounts = await eth.request({ method: 'eth_requestAccounts' }) as string[]
+    setWalletAddress(accounts[0])
+    setWalletConnected(true)
+    // Cambiar a Polygon
+    try {
+      await eth.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x89' }] })
+    } catch {
+      await eth.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '0x89', chainName: 'Polygon', nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 }, rpcUrls: ['https://polygon-rpc.com'], blockExplorerUrls: ['https://polygonscan.com'] }] })
+    }
+  }
+
+  async function sendTx(data: string, label: string) {
+    const eth = (window as unknown as { ethereum?: { request: (a: { method: string; params?: unknown[] }) => Promise<unknown> } }).ethereum
+    if (!eth || !walletConnected) { setTxStatus('Conecta MetaMask primero'); return }
+    setTxStatus(`Enviando ${label}...`)
+    try {
+      const txHash = await eth.request({ method: 'eth_sendTransaction', params: [{ from: walletAddress, to: PRESALE_ADDRESS, data, gas: '0x30D40' }] }) as string
+      setTxStatus(`✅ ${label} enviada: ${txHash.slice(0,18)}...`)
+      setTimeout(fetchStats, 5000)
+    } catch(e: unknown) {
+      const err = e as { message?: string }
+      setTxStatus(`❌ Error: ${err.message || 'rechazada'}`)
+    }
+  }
+
+  function login() {
+    if (password === ADMIN_PASSWORD) { setAuthed(true); setPwError(false) }
+    else setPwError(true)
+  }
+
+  if (!authed) return (
+    <div className="min-h-screen bg-[#060b14] flex items-center justify-center px-4">
+      <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-8 w-full max-w-sm">
+        <div className="flex items-center gap-2 mb-6">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-600 to-purple-600 flex items-center justify-center text-white font-black text-sm">A</div>
+          <span className="font-bold text-white">AGROVIDA <span className="text-green-500">Admin</span></span>
+        </div>
+        <p className="text-slate-400 text-sm mb-4">Ingresa la contraseña de administrador</p>
+        <input
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && login()}
+          placeholder="Contraseña"
+          className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600 mb-3"
+        />
+        {pwError && <p className="text-red-400 text-xs mb-3">Contraseña incorrecta</p>}
+        <button onClick={login} className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition-colors">
+          Ingresar
+        </button>
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="min-h-screen bg-[#060b14] text-white">
+      {/* Header */}
+      <div className="border-b border-[#1e2d45] px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-600 to-purple-600 flex items-center justify-center text-white font-black text-sm">A</div>
+          <span className="font-bold">AGROVIDA <span className="text-green-500">Admin Panel</span></span>
+        </div>
+        <div className="flex items-center gap-3">
+          {walletConnected
+            ? <span className="text-xs text-green-400 bg-green-900/30 border border-green-700/30 px-3 py-1 rounded-full">{walletAddress.slice(0,6)}...{walletAddress.slice(-4)} ✓</span>
+            : <button onClick={connectWallet} className="text-xs bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded-xl font-medium transition-colors">Conectar MetaMask</button>
+          }
+          <button onClick={fetchStats} className="text-xs text-slate-400 hover:text-white border border-[#1e2d45] px-3 py-1.5 rounded-lg transition-colors">
+            {loading ? '⏳' : '🔄'} Actualizar
+          </button>
+          <button onClick={() => setAuthed(false)} className="text-xs text-slate-500 hover:text-red-400 transition-colors">Salir</button>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+
+        {/* Estado TX */}
+        {txStatus && (
+          <div className={`rounded-xl px-4 py-3 text-sm border ${txStatus.startsWith('✅') ? 'bg-green-900/20 border-green-700/30 text-green-400' : txStatus.startsWith('❌') ? 'bg-red-900/20 border-red-700/30 text-red-400' : 'bg-blue-900/20 border-blue-700/30 text-blue-400'}`}>
+            {txStatus}
+          </div>
+        )}
+
+        {/* Stats principales */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { label: 'AGROVIDA Vendidos', value: stats?.totalSold ?? '—', color: 'text-green-400' },
+            { label: 'AGROVIDA Disponibles', value: stats?.remaining ?? '—', color: 'text-blue-400' },
+            { label: 'MATIC en Presale', value: stats ? stats.maticBalance + ' POL' : '—', color: 'text-purple-400' },
+            { label: 'USDT en Presale', value: stats ? '$' + stats.usdtBalance : '—', color: 'text-yellow-400' },
+          ].map(s => (
+            <div key={s.label} className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-5">
+              <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">{s.label}</p>
+              <p className={`text-xl font-black ${s.color}`}>{s.value}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Estado presale + tasas */}
+        <div className="grid sm:grid-cols-3 gap-4">
+          <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-5">
+            <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Estado Presale</p>
+            <div className={`text-lg font-black ${stats?.presaleOpen ? 'text-green-400' : 'text-red-400'}`}>
+              {stats?.presaleOpen ? '🟢 ABIERTA' : '🔴 CERRADA'}
+            </div>
+          </div>
+          <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-5">
+            <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Tasa MATIC</p>
+            <p className="text-lg font-black text-white">1 POL = <span className="text-green-400">{stats?.rateMatic ?? '—'} AGROVIDA</span></p>
+          </div>
+          <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-5">
+            <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Tasa USDT</p>
+            <p className="text-lg font-black text-white">1 USDT = <span className="text-green-400">{stats?.rateUsdt ?? '—'} AGROVIDA</span></p>
+          </div>
+        </div>
+
+        {/* Acciones — Retiros */}
+        <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-6">
+          <h2 className="text-white font-bold mb-1">💰 Retirar Fondos</h2>
+          <p className="text-slate-500 text-xs mb-5">Los fondos se envían a la wallet owner: {OWNER_ADDRESS.slice(0,10)}...{OWNER_ADDRESS.slice(-6)}</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <button
+              onClick={() => sendTx(SIG.withdrawMatic + OWNER_ADDRESS.toLowerCase().replace('0x','').padStart(64,'0'), 'Retiro MATIC')}
+              className="bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
+            >
+              Retirar {stats?.maticBalance ?? '0'} POL →
+            </button>
+            <button
+              onClick={() => sendTx(SIG.withdrawUSDT + OWNER_ADDRESS.toLowerCase().replace('0x','').padStart(64,'0'), 'Retiro USDT')}
+              className="bg-yellow-700 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
+            >
+              Retirar ${stats?.usdtBalance ?? '0'} USDT →
+            </button>
+          </div>
+        </div>
+
+        {/* Acciones — Control presale */}
+        <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-6">
+          <h2 className="text-white font-bold mb-1">⚙️ Control de Presale</h2>
+          <p className="text-slate-500 text-xs mb-5">Abrir, cerrar o pausar la presale en emergencia</p>
+          <div className="grid sm:grid-cols-3 gap-4">
+            <button
+              onClick={() => sendTx(SIG.setPresaleOpen + '1'.padStart(64,'0'), 'Abrir Presale')}
+              className="bg-green-700 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
+            >
+              🟢 Abrir Presale
+            </button>
+            <button
+              onClick={() => sendTx(SIG.setPresaleOpen + '0'.padStart(64,'0'), 'Cerrar Presale')}
+              className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
+            >
+              🔴 Cerrar Presale
+            </button>
+            <button
+              onClick={() => sendTx(SIG.pause, 'Pausar Emergencia')}
+              className="bg-red-800 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
+            >
+              ⏸ Pausar Emergencia
+            </button>
+          </div>
+        </div>
+
+        {/* Acciones — Tasas */}
+        <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-6">
+          <h2 className="text-white font-bold mb-1">📈 Actualizar Tasas</h2>
+          <p className="text-slate-500 text-xs mb-5">Cambia cuántos AGROVIDA se entregan por 1 MATIC o 1 USDT</p>
+          <div className="grid sm:grid-cols-3 gap-4 items-end">
+            <div>
+              <label className="text-slate-400 text-xs block mb-2">AGROVIDA por 1 MATIC</label>
+              <input
+                type="number"
+                value={newRateMatic}
+                onChange={e => setNewRateMatic(e.target.value)}
+                placeholder={stats?.rateMatic ?? '1000'}
+                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+              />
+            </div>
+            <div>
+              <label className="text-slate-400 text-xs block mb-2">AGROVIDA por 1 USDT</label>
+              <input
+                type="number"
+                value={newRateUsdt}
+                onChange={e => setNewRateUsdt(e.target.value)}
+                placeholder={stats?.rateUsdt ?? '10'}
+                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+              />
+            </div>
+            <button
+              onClick={() => {
+                if (!newRateMatic || !newRateUsdt) { setTxStatus('❌ Ingresa ambas tasas'); return }
+                const rm = BigInt(newRateMatic).toString(16).padStart(64,'0')
+                const ru = BigInt(newRateUsdt).toString(16).padStart(64,'0')
+                sendTx(SIG.setRates + rm + ru, 'Actualizar Tasas')
+              }}
+              className="bg-blue-700 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
+            >
+              Actualizar Tasas
+            </button>
+          </div>
+        </div>
+
+        {/* Info contratos */}
+        <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-6">
+          <h2 className="text-white font-bold mb-4">📋 Contratos en Polygon Mainnet</h2>
+          <div className="space-y-3">
+            {[
+              { label: 'AGROVIDA Token', address: AGROVIDA_ADDRESS, color: 'text-green-400' },
+              { label: 'Presale',        address: PRESALE_ADDRESS,  color: 'text-purple-400' },
+              { label: 'Owner Wallet',   address: OWNER_ADDRESS,    color: 'text-yellow-400' },
+            ].map(c => (
+              <div key={c.label} className="flex items-center justify-between gap-4 py-2 border-b border-[#1e2d45] last:border-0">
+                <span className="text-slate-400 text-sm w-32">{c.label}</span>
+                <span className={`font-mono text-xs ${c.color} flex-1 break-all`}>{c.address}</span>
+                <a href={`https://polygonscan.com/address/${c.address}`} target="_blank" rel="noopener noreferrer"
+                  className="text-xs text-slate-500 hover:text-white transition-colors shrink-0">
+                  Ver ↗
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  )
+}
