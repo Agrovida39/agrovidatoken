@@ -174,37 +174,24 @@ export default function AdminPage() {
   }
 
   if (!authed) return (
-    <div className="min-h-screen bg-[#060b14] flex items-center justify-center px-4 py-12">
-      <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-8 w-full max-w-sm shadow-2xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-600 to-purple-600 flex items-center justify-center text-white font-black text-lg">A</div>
+    <div style={{minHeight:'100vh', background:'#060b14', display:'flex', alignItems:'center', justifyContent:'center', padding:'24px'}}>
+      <div style={{background:'#0d1726', border:'1px solid #1e2d45', borderRadius:'16px', padding:'32px', width:'100%', maxWidth:'380px'}}>
+        <div style={{display:'flex', alignItems:'center', gap:'12px', marginBottom:'24px'}}>
+          <div style={{width:'40px', height:'40px', borderRadius:'50%', background:'linear-gradient(135deg,#16a34a,#7c3aed)', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontWeight:'900', fontSize:'18px'}}>A</div>
           <div>
-            <p className="font-bold text-white text-lg">AGROVIDA Admin</p>
-            <p className="text-slate-500 text-xs">Panel de Control</p>
+            <p style={{color:'white', fontWeight:'700', fontSize:'18px', margin:0}}>AGROVIDA Admin</p>
+            <p style={{color:'#64748b', fontSize:'12px', margin:0}}>Panel de Control</p>
           </div>
         </div>
-        {/* Google login */}
-        <a
-          href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=291425223198-np10s5tdv5v069qe4omc10j8rh5av8ub.apps.googleusercontent.com&redirect_uri=https://agrovidatoken.com/api/auth/callback/google&response_type=code&scope=email+profile&prompt=select_account`}
-          className="w-full flex items-center justify-center gap-3 bg-white text-gray-800 font-bold py-3 rounded-xl hover:bg-gray-100 transition-colors mb-4"
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg>
-          Continuar con Google
-        </a>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="flex-1 h-px bg-[#1e2d45]" />
-          <span className="text-slate-600 text-xs">o</span>
-          <div className="flex-1 h-px bg-[#1e2d45]" />
-        </div>
 
-        <div className="space-y-3 mb-4">
+        <div style={{marginBottom:'16px', display:'flex', flexDirection:'column', gap:'12px'}}>
           <input
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && login()}
             placeholder="Correo electrónico"
-            className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+            style={{width:'100%', background:'#060b14', border:'1px solid #1e2d45', borderRadius:'12px', padding:'12px 16px', color:'white', fontSize:'14px', outline:'none', boxSizing:'border-box'}}
           />
           <input
             type="password"
@@ -212,13 +199,27 @@ export default function AdminPage() {
             onChange={e => setPassword(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && login()}
             placeholder="Contraseña"
-            className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+            style={{width:'100%', background:'#060b14', border:'1px solid #1e2d45', borderRadius:'12px', padding:'12px 16px', color:'white', fontSize:'14px', outline:'none', boxSizing:'border-box'}}
           />
         </div>
-        {pwError && <p className="text-red-400 text-xs mb-3">{pwError}</p>}
-        <button onClick={login} className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition-colors">
+
+        {pwError && <p style={{color:'#f87171', fontSize:'12px', marginBottom:'12px'}}>{pwError}</p>}
+
+        <button onClick={login} style={{width:'100%', background:'#16a34a', color:'white', fontWeight:'700', padding:'12px', borderRadius:'12px', border:'none', cursor:'pointer', fontSize:'15px', marginBottom:'12px'}}>
           Ingresar
         </button>
+
+        <div style={{display:'flex', alignItems:'center', gap:'8px', marginBottom:'12px'}}>
+          <div style={{flex:1, height:'1px', background:'#1e2d45'}} />
+          <span style={{color:'#475569', fontSize:'12px'}}>o</span>
+          <div style={{flex:1, height:'1px', background:'#1e2d45'}} />
+        </div>
+
+        <a href="https://accounts.google.com/o/oauth2/v2/auth?client_id=291425223198-np10s5tdv5v069qe4omc10j8rh5av8ub.apps.googleusercontent.com&redirect_uri=https://agrovidatoken.com/api/auth/callback/google&response_type=code&scope=email+profile&prompt=select_account"
+          style={{width:'100%', display:'flex', alignItems:'center', justifyContent:'center', gap:'12px', background:'white', color:'#1f2937', fontWeight:'700', padding:'12px', borderRadius:'12px', textDecoration:'none', fontSize:'14px', boxSizing:'border-box'}}>
+          <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg>
+          Continuar con Google
+        </a>
       </div>
     </div>
   )
