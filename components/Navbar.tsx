@@ -74,8 +74,15 @@ export default function Navbar() {
             </a>
           ))}
           <a
-            href="#waitlist"
+            href="#comprar"
             className="btn-primary block text-center text-sm mt-3"
+            onClick={() => setOpen(false)}
+          >
+            Comprar AGROVIDATOKEN
+          </a>
+          <a
+            href="#waitlist"
+            className="block text-center text-sm py-2 text-slate-400 hover:text-white"
             onClick={() => setOpen(false)}
           >
             Lista de Espera

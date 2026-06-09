@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useSession, signIn, signOut } from 'next-auth/react'
 
 const ADMIN_EMAIL        = 'sumaproyect19@gmail.com'
 const ADMIN_PASSWORD_KEY = 'agrovida_admin_pw'
@@ -13,38 +12,6 @@ const USDT_ADDRESS     = '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
 const OWNER_ADDRESS    = '0xBDfB4c5724097c8CD9e7A31900d8dF546fb28f98'
 const POLYGON_RPC      = 'https://polygon-rpc.com'
 
-// ABI mínimo necesario
-const PRESALE_ABI = [
-  { name: 'totalSold',      type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
-  { name: 'presaleOpen',    type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'bool' }] },
-  { name: 'rateMatic',      type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
-  { name: 'rateUsdt',       type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
-  { name: 'remainingTokens',type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'uint256' }] },
-  { name: 'withdrawMatic',  type: 'function', stateMutability: 'nonpayable', inputs: [{ name: 'to', type: 'address' }], outputs: [] },
-  { name: 'withdrawUSDT',   type: 'function', stateMutability: 'nonpayable', inputs: [{ name: 'to', type: 'address' }], outputs: [] },
-  { name: 'setPresaleOpen', type: 'function', stateMutability: 'nonpayable', inputs: [{ name: '_open', type: 'bool' }], outputs: [] },
-  { name: 'setRates',       type: 'function', stateMutability: 'nonpayable', inputs: [{ name: '_rateMatic', type: 'uint256' }, { name: '_rateUsdt', type: 'uint256' }], outputs: [] },
-  { name: 'pause',          type: 'function', stateMutability: 'nonpayable', inputs: [], outputs: [] },
-  { name: 'unpause',        type: 'function', stateMutability: 'nonpayable', inputs: [] , outputs: [] },
-]
-
-function encodeCall(sig: string, types: string[], values: (string | boolean | bigint)[]): string {
-  const selector = sig.slice(0, 10)
-  let encoded = selector
-  for (let i = 0; i < types.length; i++) {
-    const v = values[i]
-    if (types[i] === 'address') {
-      encoded += (v as string).toLowerCase().replace('0x','').padStart(64,'0')
-    } else if (types[i] === 'bool') {
-      encoded += (v ? '1' : '0').padStart(64,'0')
-    } else if (types[i] === 'uint256') {
-      encoded += BigInt(v as string).toString(16).padStart(64,'0')
-    }
-  }
-  return encoded
-}
-
-// Keccak4-byte selectors precalculados
 const SIG = {
   totalSold:       '0xe4849b32',
   presaleOpen:     '0x5d86dde1',
@@ -56,7 +23,6 @@ const SIG = {
   setPresaleOpen:  '0xd7a6c22d',
   setRates:        '0x2b74c0d3',
   pause:           '0x8456cb59',
-  unpause:         '0x3f4ba83a',
   balanceOf:       '0x70a08231',
 }
 
@@ -77,23 +43,24 @@ async function ethCall(to: string, data: string) {
 function fromHex18(hex: string): string {
   if (!hex || hex === '0x') return '0'
   const val = BigInt(hex)
-  const whole = val / BigInt(1e18)
-  return whole.toLocaleString()
-}
-
-function fromHex6(hex: string): string {
-  if (!hex || hex === '0x') return '0'
-  const val = BigInt(hex)
-  const whole = val / BigInt(1e6)
+  const whole = val / BigInt('1000000000000000000')
   return whole.toLocaleString()
 }
 
 function fromHex18Float(hex: string): string {
   if (!hex || hex === '0x') return '0'
   const val = BigInt(hex)
-  const whole = val / BigInt(1e18)
-  const dec = (val % BigInt(1e18)) * BigInt(100) / BigInt(1e18)
+  const unit = BigInt('1000000000000000000')
+  const whole = val / unit
+  const dec = (val % unit) * BigInt(100) / unit
   return `${whole.toLocaleString()}.${dec.toString().padStart(2,'0')}`
+}
+
+function fromHex6(hex: string): string {
+  if (!hex || hex === '0x') return '0'
+  const val = BigInt(hex)
+  const whole = val / BigInt('1000000')
+  return whole.toLocaleString()
 }
 
 interface Stats {
@@ -104,90 +71,25 @@ interface Stats {
   rateUsdt: string
   maticBalance: string
   usdtBalance: string
-  ownerMatic: string
 }
 
 export default function AdminPage() {
-  const { data: session, status } = useSession()
-  const [useGoogle, setUseGoogle] = useState(true)
-  const [authed, setAuthed]     = useState(false)
-  const [email, setEmail]       = useState('')
+  const [authed, setAuthed]   = useState(false)
+  const [email, setEmail]     = useState('')
   const [password, setPassword] = useState('')
-  const [pwError, setPwError]   = useState('')
-  const [stats, setStats]       = useState<Stats | null>(null)
-  const [loading, setLoading]   = useState(false)
+  const [pwError, setPwError] = useState('')
+  const [stats, setStats]     = useState<Stats | null>(null)
+  const [loading, setLoading] = useState(false)
   const [txStatus, setTxStatus] = useState('')
   const [walletConnected, setWalletConnected] = useState(false)
   const [walletAddress, setWalletAddress]     = useState('')
   const [newRateMatic, setNewRateMatic] = useState('')
   const [newRateUsdt, setNewRateUsdt]   = useState('')
-  // Cambiar contraseña
-  const [showChangePw, setShowChangePw]   = useState(false)
-  const [currentPw, setCurrentPw]         = useState('')
-  const [newPw, setNewPw]                 = useState('')
-  const [confirmPw, setConfirmPw]         = useState('')
-  const [changePwMsg, setChangePwMsg]     = useState('')
-
-  const fetchStats = useCallback(async () => {
-    setLoading(true)
-    try {
-      const [totalSoldHex, remainingHex, openHex, rateMaticHex, rateUsdtHex, maticBalHex, usdtBalHex, ownerMaticHex] = await Promise.all([
-        ethCall(PRESALE_ADDRESS, SIG.totalSold),
-        ethCall(PRESALE_ADDRESS, SIG.remainingTokens),
-        ethCall(PRESALE_ADDRESS, SIG.presaleOpen),
-        ethCall(PRESALE_ADDRESS, SIG.rateMatic),
-        ethCall(PRESALE_ADDRESS, SIG.rateUsdt),
-        rpcCall('eth_getBalance', [PRESALE_ADDRESS, 'latest']),
-        ethCall(USDT_ADDRESS, SIG.balanceOf + PRESALE_ADDRESS.toLowerCase().replace('0x','').padStart(64,'0')),
-        rpcCall('eth_getBalance', [OWNER_ADDRESS, 'latest']),
-      ])
-      setStats({
-        totalSold:   fromHex18(totalSoldHex),
-        remaining:   fromHex18(remainingHex),
-        presaleOpen: openHex !== '0x' + '0'.repeat(64),
-        rateMatic:   BigInt(rateMaticHex || '0x0').toString(),
-        rateUsdt:    BigInt(rateUsdtHex  || '0x0').toString(),
-        maticBalance: fromHex18Float(maticBalHex),
-        usdtBalance:  fromHex6(usdtBalHex),
-        ownerMatic:   fromHex18Float(ownerMaticHex),
-      })
-    } catch(e) {
-      console.error(e)
-    }
-    setLoading(false)
-  }, [])
-
-  useEffect(() => {
-    if (authed) fetchStats()
-  }, [authed, fetchStats])
-
-  async function connectWallet() {
-    const eth = (window as unknown as { ethereum?: { request: (a: { method: string; params?: unknown[] }) => Promise<unknown> } }).ethereum
-    if (!eth) { setTxStatus('MetaMask no detectado'); return }
-    const accounts = await eth.request({ method: 'eth_requestAccounts' }) as string[]
-    setWalletAddress(accounts[0])
-    setWalletConnected(true)
-    // Cambiar a Polygon
-    try {
-      await eth.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x89' }] })
-    } catch {
-      await eth.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '0x89', chainName: 'Polygon', nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 }, rpcUrls: ['https://polygon-rpc.com'], blockExplorerUrls: ['https://polygonscan.com'] }] })
-    }
-  }
-
-  async function sendTx(data: string, label: string) {
-    const eth = (window as unknown as { ethereum?: { request: (a: { method: string; params?: unknown[] }) => Promise<unknown> } }).ethereum
-    if (!eth || !walletConnected) { setTxStatus('Conecta MetaMask primero'); return }
-    setTxStatus(`Enviando ${label}...`)
-    try {
-      const txHash = await eth.request({ method: 'eth_sendTransaction', params: [{ from: walletAddress, to: PRESALE_ADDRESS, data, gas: '0x30D40' }] }) as string
-      setTxStatus(`✅ ${label} enviada: ${txHash.slice(0,18)}...`)
-      setTimeout(fetchStats, 5000)
-    } catch(e: unknown) {
-      const err = e as { message?: string }
-      setTxStatus(`❌ Error: ${err.message || 'rechazada'}`)
-    }
-  }
+  const [showChangePw, setShowChangePw] = useState(false)
+  const [currentPw, setCurrentPw]       = useState('')
+  const [newPw, setNewPw]               = useState('')
+  const [confirmPw, setConfirmPw]       = useState('')
+  const [changePwMsg, setChangePwMsg]   = useState('')
 
   function getStoredPassword(): string {
     if (typeof window === 'undefined') return DEFAULT_PASSWORD
@@ -217,72 +119,92 @@ export default function AdminPage() {
     setTimeout(() => { setShowChangePw(false); setChangePwMsg('') }, 2000)
   }
 
-  const isAuthed = (session?.user) || authed
+  const fetchStats = useCallback(async () => {
+    setLoading(true)
+    try {
+      const [totalSoldHex, remainingHex, openHex, rateMaticHex, rateUsdtHex, maticBalHex, usdtBalHex] = await Promise.all([
+        ethCall(PRESALE_ADDRESS, SIG.totalSold),
+        ethCall(PRESALE_ADDRESS, SIG.remainingTokens),
+        ethCall(PRESALE_ADDRESS, SIG.presaleOpen),
+        ethCall(PRESALE_ADDRESS, SIG.rateMatic),
+        ethCall(PRESALE_ADDRESS, SIG.rateUsdt),
+        rpcCall('eth_getBalance', [PRESALE_ADDRESS, 'latest']),
+        ethCall(USDT_ADDRESS, SIG.balanceOf + PRESALE_ADDRESS.toLowerCase().replace('0x','').padStart(64,'0')),
+      ])
+      setStats({
+        totalSold:    fromHex18(totalSoldHex),
+        remaining:    fromHex18(remainingHex),
+        presaleOpen:  openHex !== '0x' + '0'.repeat(64),
+        rateMatic:    BigInt(rateMaticHex || '0x0').toString(),
+        rateUsdt:     BigInt(rateUsdtHex  || '0x0').toString(),
+        maticBalance: fromHex18Float(maticBalHex),
+        usdtBalance:  fromHex6(usdtBalHex),
+      })
+    } catch(e) { console.error(e) }
+    setLoading(false)
+  }, [])
 
-  if (status === 'loading') return (
-    <div className="min-h-screen bg-[#060b14] flex items-center justify-center">
-      <p className="text-slate-400 text-sm">Cargando...</p>
-    </div>
-  )
+  useEffect(() => { if (authed) fetchStats() }, [authed, fetchStats])
 
-  if (!isAuthed) return (
+  async function connectWallet() {
+    const eth = (window as unknown as { ethereum?: { request: (a: { method: string; params?: unknown[] }) => Promise<unknown> } }).ethereum
+    if (!eth) { setTxStatus('MetaMask no detectado'); return }
+    const accounts = await eth.request({ method: 'eth_requestAccounts' }) as string[]
+    setWalletAddress(accounts[0])
+    setWalletConnected(true)
+    try {
+      await eth.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x89' }] })
+    } catch {
+      await eth.request({ method: 'wallet_addEthereumChain', params: [{ chainId: '0x89', chainName: 'Polygon', nativeCurrency: { name: 'POL', symbol: 'POL', decimals: 18 }, rpcUrls: ['https://polygon-rpc.com'], blockExplorerUrls: ['https://polygonscan.com'] }] })
+    }
+  }
+
+  async function sendTx(data: string, label: string) {
+    const eth = (window as unknown as { ethereum?: { request: (a: { method: string; params?: unknown[] }) => Promise<unknown> } }).ethereum
+    if (!eth || !walletConnected) { setTxStatus('Conecta MetaMask primero'); return }
+    setTxStatus(`Enviando ${label}...`)
+    try {
+      const txHash = await eth.request({ method: 'eth_sendTransaction', params: [{ from: walletAddress, to: PRESALE_ADDRESS, data, gas: '0x30D40' }] }) as string
+      setTxStatus(`✅ ${label} enviada: ${txHash.slice(0,18)}...`)
+      setTimeout(fetchStats, 5000)
+    } catch(e: unknown) {
+      const err = e as { message?: string }
+      setTxStatus(`❌ Error: ${err.message || 'rechazada'}`)
+    }
+  }
+
+  if (!authed) return (
     <div className="min-h-screen bg-[#060b14] flex items-center justify-center px-4">
       <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-8 w-full max-w-sm">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-600 to-purple-600 flex items-center justify-center text-white font-black">A</div>
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-600 to-purple-600 flex items-center justify-center text-white font-black text-lg">A</div>
           <div>
-            <p className="font-bold text-white">AGROVIDA Admin</p>
+            <p className="font-bold text-white text-lg">AGROVIDA Admin</p>
             <p className="text-slate-500 text-xs">Panel de Control</p>
           </div>
         </div>
-
-        {useGoogle ? (
-          <>
-            <button
-              onClick={() => signIn('google')}
-              className="w-full flex items-center justify-center gap-3 bg-white text-gray-800 font-bold py-3 rounded-xl transition-colors hover:bg-gray-100 mb-4"
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.707A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.707V4.961H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.039l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.961L3.964 6.293C4.672 4.166 6.656 3.58 9 3.58z"/></svg>
-              Continuar con Google
-            </button>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex-1 h-px bg-[#1e2d45]" />
-              <span className="text-slate-600 text-xs">o</span>
-              <div className="flex-1 h-px bg-[#1e2d45]" />
-            </div>
-            <button onClick={() => setUseGoogle(false)} className="w-full text-slate-500 hover:text-slate-300 text-xs py-2 transition-colors">
-              Usar email y contraseña
-            </button>
-          </>
-        ) : (
-          <>
-            <div className="space-y-3 mb-4">
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && login()}
-                placeholder="Correo electrónico"
-                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
-              />
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && login()}
-                placeholder="Contraseña"
-                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
-              />
-            </div>
-            {pwError && <p className="text-red-400 text-xs mb-3">{pwError}</p>}
-            <button onClick={login} className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition-colors mb-3">
-              Ingresar
-            </button>
-            <button onClick={() => setUseGoogle(true)} className="w-full text-slate-500 hover:text-slate-300 text-xs py-2 transition-colors">
-              ← Volver a Google
-            </button>
-          </>
-        )}
+        <div className="space-y-3 mb-4">
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && login()}
+            placeholder="Correo electrónico"
+            className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && login()}
+            placeholder="Contraseña"
+            className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
+          />
+        </div>
+        {pwError && <p className="text-red-400 text-xs mb-3">{pwError}</p>}
+        <button onClick={login} className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition-colors">
+          Ingresar
+        </button>
       </div>
     </div>
   )
@@ -290,12 +212,12 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen bg-[#060b14] text-white">
       {/* Header */}
-      <div className="border-b border-[#1e2d45] px-6 py-4 flex items-center justify-between">
+      <div className="border-b border-[#1e2d45] px-4 sm:px-6 py-4 flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-600 to-purple-600 flex items-center justify-center text-white font-black text-sm">A</div>
-          <span className="font-bold">AGROVIDA <span className="text-green-500">Admin Panel</span></span>
+          <span className="font-bold">AGROVIDA <span className="text-green-500">Admin</span></span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
           {walletConnected
             ? <span className="text-xs text-green-400 bg-green-900/30 border border-green-700/30 px-3 py-1 rounded-full">{walletAddress.slice(0,6)}...{walletAddress.slice(-4)} ✓</span>
             : <button onClick={connectWallet} className="text-xs bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded-xl font-medium transition-colors">Conectar MetaMask</button>
@@ -306,25 +228,24 @@ export default function AdminPage() {
           <button onClick={() => setShowChangePw(true)} className="text-xs text-slate-400 hover:text-white border border-[#1e2d45] px-3 py-1.5 rounded-lg transition-colors">
             🔑 Cambiar clave
           </button>
-          <button onClick={() => { setAuthed(false); signOut({ callbackUrl: '/admin' }) }} className="text-xs text-slate-500 hover:text-red-400 transition-colors">Salir</button>
+          <button onClick={() => setAuthed(false)} className="text-xs text-slate-500 hover:text-red-400 transition-colors">Salir</button>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-6">
 
-        {/* Estado TX */}
         {txStatus && (
           <div className={`rounded-xl px-4 py-3 text-sm border ${txStatus.startsWith('✅') ? 'bg-green-900/20 border-green-700/30 text-green-400' : txStatus.startsWith('❌') ? 'bg-red-900/20 border-red-700/30 text-red-400' : 'bg-blue-900/20 border-blue-700/30 text-blue-400'}`}>
             {txStatus}
           </div>
         )}
 
-        {/* Stats principales */}
+        {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'AGROVIDA Vendidos', value: stats?.totalSold ?? '—', color: 'text-green-400' },
-            { label: 'AGROVIDA Disponibles', value: stats?.remaining ?? '—', color: 'text-blue-400' },
-            { label: 'MATIC en Presale', value: stats ? stats.maticBalance + ' POL' : '—', color: 'text-purple-400' },
+            { label: 'AGROVIDATOKEN Vendidos', value: stats?.totalSold ?? '—', color: 'text-green-400' },
+            { label: 'AGROVIDATOKEN Disponibles', value: stats?.remaining ?? '—', color: 'text-blue-400' },
+            { label: 'POL en Presale', value: stats ? stats.maticBalance + ' POL' : '—', color: 'text-purple-400' },
             { label: 'USDT en Presale', value: stats ? '$' + stats.usdtBalance : '—', color: 'text-yellow-400' },
           ].map(s => (
             <div key={s.label} className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-5">
@@ -334,7 +255,7 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* Estado presale + tasas */}
+        {/* Estado */}
         <div className="grid sm:grid-cols-3 gap-4">
           <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-5">
             <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Estado Presale</p>
@@ -343,7 +264,7 @@ export default function AdminPage() {
             </div>
           </div>
           <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-5">
-            <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Tasa MATIC</p>
+            <p className="text-slate-500 text-xs uppercase tracking-wider mb-2">Tasa POL</p>
             <p className="text-lg font-black text-white">1 POL = <span className="text-green-400">{stats?.rateMatic ?? '—'} AGROVIDA</span></p>
           </div>
           <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-5">
@@ -352,92 +273,72 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Acciones — Retiros */}
+        {/* Retiros */}
         <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-6">
           <h2 className="text-white font-bold mb-1">💰 Retirar Fondos</h2>
-          <p className="text-slate-500 text-xs mb-5">Los fondos se envían a la wallet owner: {OWNER_ADDRESS.slice(0,10)}...{OWNER_ADDRESS.slice(-6)}</p>
+          <p className="text-slate-500 text-xs mb-5">Se envían a: {OWNER_ADDRESS.slice(0,10)}...{OWNER_ADDRESS.slice(-6)}</p>
           <div className="grid sm:grid-cols-2 gap-4">
-            <button
-              onClick={() => sendTx(SIG.withdrawMatic + OWNER_ADDRESS.toLowerCase().replace('0x','').padStart(64,'0'), 'Retiro MATIC')}
-              className="bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
-            >
+            <button onClick={() => sendTx(SIG.withdrawMatic + OWNER_ADDRESS.toLowerCase().replace('0x','').padStart(64,'0'), 'Retiro POL')}
+              className="bg-purple-700 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm">
               Retirar {stats?.maticBalance ?? '0'} POL →
             </button>
-            <button
-              onClick={() => sendTx(SIG.withdrawUSDT + OWNER_ADDRESS.toLowerCase().replace('0x','').padStart(64,'0'), 'Retiro USDT')}
-              className="bg-yellow-700 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
-            >
+            <button onClick={() => sendTx(SIG.withdrawUSDT + OWNER_ADDRESS.toLowerCase().replace('0x','').padStart(64,'0'), 'Retiro USDT')}
+              className="bg-yellow-700 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm">
               Retirar ${stats?.usdtBalance ?? '0'} USDT →
             </button>
           </div>
         </div>
 
-        {/* Acciones — Control presale */}
+        {/* Control presale */}
         <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-6">
           <h2 className="text-white font-bold mb-1">⚙️ Control de Presale</h2>
-          <p className="text-slate-500 text-xs mb-5">Abrir, cerrar o pausar la presale en emergencia</p>
+          <p className="text-slate-500 text-xs mb-5">Abrir, cerrar o pausar la presale</p>
           <div className="grid sm:grid-cols-3 gap-4">
-            <button
-              onClick={() => sendTx(SIG.setPresaleOpen + '1'.padStart(64,'0'), 'Abrir Presale')}
-              className="bg-green-700 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
-            >
+            <button onClick={() => sendTx(SIG.setPresaleOpen + '1'.padStart(64,'0'), 'Abrir Presale')}
+              className="bg-green-700 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm">
               🟢 Abrir Presale
             </button>
-            <button
-              onClick={() => sendTx(SIG.setPresaleOpen + '0'.padStart(64,'0'), 'Cerrar Presale')}
-              className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
-            >
+            <button onClick={() => sendTx(SIG.setPresaleOpen + '0'.padStart(64,'0'), 'Cerrar Presale')}
+              className="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm">
               🔴 Cerrar Presale
             </button>
-            <button
-              onClick={() => sendTx(SIG.pause, 'Pausar Emergencia')}
-              className="bg-red-800 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
-            >
+            <button onClick={() => sendTx(SIG.pause, 'Pausar Emergencia')}
+              className="bg-red-800 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm">
               ⏸ Pausar Emergencia
             </button>
           </div>
         </div>
 
-        {/* Acciones — Tasas */}
+        {/* Tasas */}
         <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-6">
           <h2 className="text-white font-bold mb-1">📈 Actualizar Tasas</h2>
-          <p className="text-slate-500 text-xs mb-5">Cambia cuántos AGROVIDA se entregan por 1 MATIC o 1 USDT</p>
+          <p className="text-slate-500 text-xs mb-5">AGROVIDATOKEN entregados por 1 POL o 1 USDT</p>
           <div className="grid sm:grid-cols-3 gap-4 items-end">
             <div>
-              <label className="text-slate-400 text-xs block mb-2">AGROVIDA por 1 MATIC</label>
-              <input
-                type="number"
-                value={newRateMatic}
-                onChange={e => setNewRateMatic(e.target.value)}
-                placeholder={stats?.rateMatic ?? '1000'}
-                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
-              />
+              <label className="text-slate-400 text-xs block mb-2">AGROVIDA por 1 POL</label>
+              <input type="number" value={newRateMatic} onChange={e => setNewRateMatic(e.target.value)}
+                placeholder={stats?.rateMatic ?? '10'}
+                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600" />
             </div>
             <div>
               <label className="text-slate-400 text-xs block mb-2">AGROVIDA por 1 USDT</label>
-              <input
-                type="number"
-                value={newRateUsdt}
-                onChange={e => setNewRateUsdt(e.target.value)}
+              <input type="number" value={newRateUsdt} onChange={e => setNewRateUsdt(e.target.value)}
                 placeholder={stats?.rateUsdt ?? '10'}
-                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
-              />
+                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600" />
             </div>
-            <button
-              onClick={() => {
+            <button onClick={() => {
                 if (!newRateMatic || !newRateUsdt) { setTxStatus('❌ Ingresa ambas tasas'); return }
                 const rm = BigInt(newRateMatic).toString(16).padStart(64,'0')
                 const ru = BigInt(newRateUsdt).toString(16).padStart(64,'0')
                 sendTx(SIG.setRates + rm + ru, 'Actualizar Tasas')
               }}
-              className="bg-blue-700 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm"
-            >
+              className="bg-blue-700 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition-colors text-sm">
               Actualizar Tasas
             </button>
           </div>
         </div>
 
-        {/* Info contratos */}
+        {/* Contratos */}
         <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-6">
           <h2 className="text-white font-bold mb-4">📋 Contratos en Polygon Mainnet</h2>
           <div className="space-y-3">
@@ -447,12 +348,10 @@ export default function AdminPage() {
               { label: 'Owner Wallet',   address: OWNER_ADDRESS,    color: 'text-yellow-400' },
             ].map(c => (
               <div key={c.label} className="flex items-center justify-between gap-4 py-2 border-b border-[#1e2d45] last:border-0">
-                <span className="text-slate-400 text-sm w-32">{c.label}</span>
+                <span className="text-slate-400 text-sm w-32 shrink-0">{c.label}</span>
                 <span className={`font-mono text-xs ${c.color} flex-1 break-all`}>{c.address}</span>
                 <a href={`https://polygonscan.com/address/${c.address}`} target="_blank" rel="noopener noreferrer"
-                  className="text-xs text-slate-500 hover:text-white transition-colors shrink-0">
-                  Ver ↗
-                </a>
+                  className="text-xs text-slate-500 hover:text-white transition-colors shrink-0">Ver ↗</a>
               </div>
             ))}
           </div>
@@ -466,38 +365,20 @@ export default function AdminPage() {
           <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-8 w-full max-w-sm">
             <h3 className="text-white font-bold mb-5">🔑 Cambiar Contraseña</h3>
             <div className="space-y-3 mb-4">
-              <input
-                type="password"
-                value={currentPw}
-                onChange={e => setCurrentPw(e.target.value)}
+              <input type="password" value={currentPw} onChange={e => setCurrentPw(e.target.value)}
                 placeholder="Contraseña actual"
-                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
-              />
-              <input
-                type="password"
-                value={newPw}
-                onChange={e => setNewPw(e.target.value)}
+                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600" />
+              <input type="password" value={newPw} onChange={e => setNewPw(e.target.value)}
                 placeholder="Nueva contraseña (mín. 8 caracteres)"
-                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
-              />
-              <input
-                type="password"
-                value={confirmPw}
-                onChange={e => setConfirmPw(e.target.value)}
+                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600" />
+              <input type="password" value={confirmPw} onChange={e => setConfirmPw(e.target.value)}
                 placeholder="Confirmar nueva contraseña"
-                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600"
-              />
+                className="w-full bg-[#060b14] border border-[#1e2d45] rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-green-600" />
             </div>
-            {changePwMsg && (
-              <p className={`text-xs mb-3 ${changePwMsg.startsWith('✅') ? 'text-green-400' : 'text-red-400'}`}>{changePwMsg}</p>
-            )}
+            {changePwMsg && <p className={`text-xs mb-3 ${changePwMsg.startsWith('✅') ? 'text-green-400' : 'text-red-400'}`}>{changePwMsg}</p>}
             <div className="flex gap-3">
-              <button onClick={changePassword} className="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition-colors text-sm">
-                Guardar
-              </button>
-              <button onClick={() => { setShowChangePw(false); setChangePwMsg('') }} className="flex-1 bg-[#060b14] border border-[#1e2d45] text-slate-400 hover:text-white font-bold py-3 rounded-xl transition-colors text-sm">
-                Cancelar
-              </button>
+              <button onClick={changePassword} className="flex-1 bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl transition-colors text-sm">Guardar</button>
+              <button onClick={() => { setShowChangePw(false); setChangePwMsg('') }} className="flex-1 bg-[#060b14] border border-[#1e2d45] text-slate-400 font-bold py-3 rounded-xl transition-colors text-sm">Cancelar</button>
             </div>
           </div>
         </div>
