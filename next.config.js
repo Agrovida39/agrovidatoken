@@ -14,7 +14,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob:",
-      "connect-src 'self' https://polygon-rpc.com https://rpc-mainnet.matic.network https://rpc-mainnet.maticvigil.com https://*.infura.io wss://*.infura.io https://polygonscan.com https://accounts.google.com https://*.walletconnect.com",
+      "connect-src 'self' https://polygon-rpc.com https://polygon-bor-rpc.publicnode.com https://rpc-mainnet.matic.network https://*.infura.io wss://*.infura.io https://polygonscan.com https://accounts.google.com https://*.walletconnect.com",
       "frame-ancestors 'none'",
     ].join('; '),
   },
