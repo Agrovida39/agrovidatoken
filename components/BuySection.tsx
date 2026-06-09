@@ -279,7 +279,7 @@ export default function BuySection() {
                       </div>
                       <button onClick={handleBuy} disabled={!approved || !amount || step === 'buying'}
                         className="btn-primary w-full text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
-                        {step === 'buying' ? <><Loader2 size={14} className="animate-spin" /> Procesando…</> : <>Comprar AGROVIDA <ArrowRight size={14} /></>}
+                        {step === 'buying' ? <><Loader2 size={14} className="animate-spin" /> Procesando…</> : <>Comprar AGROVIDATOKEN <ArrowRight size={14} /></>}
                       </button>
                     </div>
                   </div>
@@ -289,7 +289,7 @@ export default function BuySection() {
                 {currency === 'MATIC' && (
                   <button onClick={handleBuy} disabled={!amount || step === 'buying'}
                     className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100">
-                    {step === 'buying' ? <><Loader2 size={18} className="animate-spin" /> Procesando…</> : <>Comprar AGROVIDA <ArrowRight size={18} /></>}
+                    {step === 'buying' ? <><Loader2 size={18} className="animate-spin" /> Procesando…</> : <>Comprar AGROVIDATOKEN <ArrowRight size={18} /></>}
                   </button>
                 )}
               </>
