@@ -196,9 +196,9 @@ export default function BuySection() {
             Compra <span className="gradient-text">AGROVIDATOKEN</span> Ahora
           </h2>
           <p className="text-slate-400 mt-4 max-w-xl mx-auto">
-            <strong className="text-white">1 MATIC = {RATE_MATIC.toLocaleString()} AGROVIDA</strong>
+            <strong className="text-white">1 MATIC = {RATE_MATIC.toLocaleString()} AGROVIDATOKEN</strong>
             {' · '}
-            <strong className="text-white">1 USDT = {RATE_USDT} AGROVIDA</strong>
+            <strong className="text-white">1 USDT = {RATE_USDT} AGROVIDATOKEN</strong>
             {' · '}Red Polygon
           </p>
         </div>
@@ -248,7 +248,7 @@ export default function BuySection() {
                 {/* Recibirás */}
                 <div className="bg-agro-dark rounded-xl px-4 py-3 mb-5 flex items-center justify-between border border-agro-dark-border">
                   <span className="text-slate-400 text-sm">Recibirás</span>
-                  <span className="text-agro-green font-black text-lg">{agro} AGROVIDA</span>
+                  <span className="text-agro-green font-black text-lg">{agro} AGROVIDATOKEN</span>
                 </div>
 
                 {/* Pasos USDT */}
