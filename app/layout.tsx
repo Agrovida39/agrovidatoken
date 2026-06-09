@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import AuthSessionProvider from '@/components/SessionProvider'
 
 export const metadata: Metadata = {
   title: 'Token AGROVIDA — Amazon de Salud & Bienestar para LatAm',
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body><AuthSessionProvider>{children}</AuthSessionProvider></body>
     </html>
   )
 }
