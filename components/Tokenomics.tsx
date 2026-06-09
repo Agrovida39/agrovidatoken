@@ -36,7 +36,7 @@ export default function Tokenomics() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <span className="text-agro-green text-sm font-semibold uppercase tracking-widest">Tokenomics</span>
-          <h2 className="text-4xl font-black text-white mt-2 mb-4">Economía del Token AGROVIDA</h2>
+          <h2 className="text-2xl sm:text-4xl font-black text-white mt-2 mb-4">Economía del Token AGROVIDA</h2>
           <p className="text-slate-400 max-w-xl mx-auto">
             Diseñado para deflación sostenida: múltiples mecanismos de burn + utilidad real en marketplace, membresías y governance.
           </p>

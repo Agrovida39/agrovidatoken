@@ -93,7 +93,7 @@ export default function Roadmap() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <span className="text-agro-gold text-sm font-semibold uppercase tracking-widest">Roadmap</span>
-          <h2 className="text-4xl font-black text-white mt-2 mb-4">Plan 24 Meses</h2>
+          <h2 className="text-2xl sm:text-4xl font-black text-white mt-2 mb-4">Plan 24 Meses</h2>
           <p className="text-slate-400 max-w-xl mx-auto">
             De presale a 5M usuarios y $1.5B GMV. Hitos claros, medibles y verificables en blockchain.
           </p>

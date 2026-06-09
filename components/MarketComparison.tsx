@@ -23,7 +23,7 @@ export default function MarketComparison() {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-14">
           <span className="text-agro-gold text-sm font-semibold uppercase tracking-widest">Ventaja Competitiva</span>
-          <h2 className="text-4xl font-black text-white mt-2 mb-4">
+          <h2 className="text-2xl sm:text-4xl font-black text-white mt-2 mb-4">
             AGROVIDA vs Competencia
           </h2>
           <p className="text-slate-400 max-w-xl mx-auto">

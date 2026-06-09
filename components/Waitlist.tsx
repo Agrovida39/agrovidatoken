@@ -6,7 +6,7 @@ export default function Waitlist() {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-10">
           <span className="text-agro-green text-sm font-semibold uppercase tracking-widest">Lista de Espera</span>
-          <h2 className="text-4xl font-black text-white mt-2 mb-4">
+          <h2 className="text-2xl sm:text-4xl font-black text-white mt-2 mb-4">
             Sé de los Primeros en Acceder
           </h2>
           <p className="text-slate-400">

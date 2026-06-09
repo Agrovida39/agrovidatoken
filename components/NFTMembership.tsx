@@ -75,7 +75,7 @@ export default function NFTMembership() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <span className="text-agro-purple-light text-sm font-semibold uppercase tracking-widest">Membresías NFT</span>
-          <h2 className="text-4xl font-black text-white mt-2 mb-4">
+          <h2 className="text-2xl sm:text-4xl font-black text-white mt-2 mb-4">
             Tu Membresía Es un NFT con Utilidad Real
           </h2>
           <p className="text-slate-400 max-w-2xl mx-auto">

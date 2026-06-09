@@ -25,12 +25,12 @@ export default function Hero() {
         </div>
 
         {/* Eyebrow */}
-        <p className="text-agro-green font-bold text-sm uppercase tracking-widest mb-4">
+        <p className="text-agro-green font-bold text-xs sm:text-sm uppercase tracking-widest mb-4 px-2">
           🫐 Nacido en Colombia · El Amazon de Salud & Bienestar para LatAm
         </p>
 
         {/* Headline */}
-        <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
+        <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black leading-tight mb-6 px-2">
           Del Arándano{' '}
           <br />
           <span className="gradient-text">al Super-Ecosistema</span>
@@ -38,7 +38,7 @@ export default function Hero() {
           de Salud & Bienestar
         </h1>
 
-        <p className="text-slate-400 text-lg sm:text-xl max-w-3xl mx-auto mb-10 leading-relaxed">
+        <p className="text-slate-400 text-base sm:text-xl max-w-3xl mx-auto mb-10 leading-relaxed px-2">
           <strong className="text-white">AGROVIDA</strong> nació del cultivo de arándanos colombianos
           y creció hasta conectar alimentos saludables, hongos medicinales,
           suplementos premium y servicios de salud —

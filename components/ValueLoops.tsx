@@ -67,7 +67,7 @@ export default function ValueLoops() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
           <span className="text-agro-green text-sm font-semibold uppercase tracking-widest">Tokenomics en Acción</span>
-          <h2 className="text-4xl font-black text-white mt-2 mb-4">5 Loops de Valor del Ecosistema</h2>
+          <h2 className="text-2xl sm:text-4xl font-black text-white mt-2 mb-4">5 Loops de Valor del Ecosistema</h2>
           <p className="text-slate-400 max-w-xl mx-auto">
             Cada actividad en el ecosistema genera demanda del Token AGROVIDA. Los loops se refuerzan entre sí creando un volante económico sostenible.
           </p>
