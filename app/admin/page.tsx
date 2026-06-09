@@ -174,8 +174,8 @@ export default function AdminPage() {
   }
 
   if (!authed) return (
-    <div className="min-h-screen bg-[#060b14] flex items-center justify-center px-4">
-      <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-8 w-full max-w-sm">
+    <div className="min-h-screen bg-[#060b14] flex items-center justify-center px-4 py-12">
+      <div className="bg-[#0d1726] border border-[#1e2d45] rounded-2xl p-8 w-full max-w-sm shadow-2xl">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-600 to-purple-600 flex items-center justify-center text-white font-black text-lg">A</div>
           <div>
