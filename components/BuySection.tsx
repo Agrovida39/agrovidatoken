@@ -146,7 +146,7 @@ export default function BuySection() {
         const weiHex = '0x' + Math.floor(val * 1e18).toString(16)
         tx = (await provider.request({
           method: 'eth_sendTransaction',
-          params: [{ from: account, to: PRESALE_ADDRESS, value: weiHex, gas: '0x30D40' }],
+          params: [{ from: account, to: PRESALE_ADDRESS, value: weiHex, data: '0xcda9442c', gas: '0x30D40' }],
         })) as string
       } else {
         // Verificar allowance antes de comprar
@@ -163,7 +163,7 @@ export default function BuySection() {
         }
 
         // Llamar buyWithUSDT(uint256) en el contrato Presale
-        const selector    = '0x8c7b3b87' // keccak256("buyWithUSDT(uint256)")[0:4]
+        const selector    = '0xa7c60160' // keccak256("buyWithUSDT(uint256)")[0:4]
         const paddedAmount = needed.toString(16).padStart(64, '0')
         const data = selector + paddedAmount
         tx = (await provider.request({
