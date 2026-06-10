@@ -339,9 +339,16 @@ export default function BuySection() {
               </div>
             )}
 
-            <div className="flex items-center gap-2 mt-6 pt-5 border-t border-agro-dark-border">
-              <ShieldCheck size={14} className="text-slate-500 shrink-0" />
-              <p className="text-slate-500 text-xs">Contrato auditado · Polygon · MATIC o USDT</p>
+            <div className="flex items-center justify-between mt-6 pt-5 border-t border-agro-dark-border gap-2 flex-wrap">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={14} className="text-slate-500 shrink-0" />
+                <p className="text-slate-500 text-xs">Contrato auditado · Polygon</p>
+              </div>
+              <a href="https://app.uniswap.org/explore/tokens/polygon/0xfb172a5f2dd76ea03d225e78cfcc2f21773aedf5"
+                target="_blank" rel="noopener noreferrer"
+                className="text-xs text-agro-purple-light hover:text-white transition-colors flex items-center gap-1">
+                Comprar en Uniswap ↗
+              </a>
             </div>
           </div>
         </div>

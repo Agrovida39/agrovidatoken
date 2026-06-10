@@ -35,7 +35,11 @@ export default function Navbar() {
         </div>
 
         {/* CTA desktop */}
-        <div className="hidden lg:flex items-center">
+        <div className="hidden lg:flex items-center gap-2">
+          <a href="https://app.uniswap.org/explore/tokens/polygon/0xfb172a5f2dd76ea03d225e78cfcc2f21773aedf5" target="_blank" rel="noopener noreferrer"
+            className="text-sm border border-agro-purple/40 text-agro-purple-light hover:bg-agro-purple/10 px-3 py-2 rounded-xl font-medium transition-colors">
+            Uniswap ↗
+          </a>
           <a href="#comprar" className="btn-primary text-sm !px-4 !py-2">
             Comprar AGROVIDA
           </a>
