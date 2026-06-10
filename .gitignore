@@ -13,6 +13,12 @@ build/
 .env
 .env*.local
 
+# verification artifacts
+Presale_flat.sol
+standard-input.json
+contracts/AGROVIDA_flat.sol
+contracts/AGROVIDA_flat_clean.sol
+
 # misc
 .DS_Store
 *.pem
