@@ -10,7 +10,7 @@ const PRESALE_ADDRESS  = '0xF516f7078d13984651fBE3Fb75A9A0ff0bfd6679'
 const AGROVIDA_ADDRESS = '0xfb172a5f2dd76eA03D225e78CfCC2f21773aEDf5'
 const USDT_ADDRESS     = '0xc2132D05D31c914a87C6611C10748AEb04B58e8F'
 const OWNER_ADDRESS    = '0xBDfB4c5724097c8CD9e7A31900d8dF546fb28f98'
-const POLYGON_RPC      = 'https://polygon-bor-rpc.publicnode.com'
+const POLYGON_RPC      = 'https://polygon-rpc.com'
 
 const SIG = {
   totalSold:       '0x9106d7ba',
