@@ -13,15 +13,15 @@ const OWNER_ADDRESS    = '0xBDfB4c5724097c8CD9e7A31900d8dF546fb28f98'
 const POLYGON_RPC      = 'https://polygon-bor-rpc.publicnode.com'
 
 const SIG = {
-  totalSold:       '0xe4849b32',
-  presaleOpen:     '0x5d86dde1',
-  rateMatic:       '0x6f610d82',
-  rateUsdt:        '0x174439f7',
-  remainingTokens: '0x722b62ad',
-  withdrawMatic:   '0x5e35359e',
-  withdrawUSDT:    '0x0fb5a6b4',
-  setPresaleOpen:  '0xd7a6c22d',
-  setRates:        '0x2b74c0d3',
+  totalSold:       '0x9106d7ba',
+  presaleOpen:     '0xbee6348a',
+  rateMatic:       '0xe5a2d3a3',
+  rateUsdt:        '0x21a34fc4',
+  remainingTokens: '0xbf583903',
+  withdrawMatic:   '0xaf8437f9',
+  withdrawUSDT:    '0x59db80f8',
+  setPresaleOpen:  '0xf5b96621',
+  setRates:        '0xac6af280',
   pause:           '0x8456cb59',
   balanceOf:       '0x70a08231',
 }
