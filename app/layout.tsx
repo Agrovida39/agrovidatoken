@@ -30,14 +30,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-AGROVIDA2026"
+          src="https://www.googletagmanager.com/gtag/js?id=G-9KYC6GW5TJ"
           strategy="afterInteractive"
         />
         <Script id="ga4-init" strategy="afterInteractive">{`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-AGROVIDA2026');
+          gtag('config', 'G-9KYC6GW5TJ');
         `}</Script>
       </body>
     </html>
