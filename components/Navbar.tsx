@@ -18,7 +18,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
         {/* Logo */}
         <a href="/" className="flex items-center gap-2 shrink-0">
-          <img src="/logo.png" alt="AGROVIDA" className="w-9 h-9 rounded-full object-cover border border-agro-purple/40" />
+          <img src="/logo-.png" alt="AGROVIDA" className="w-9 h-9 rounded-full object-cover border border-agro-purple/40" />
           <span className="font-bold text-white text-base">AGRO<span className="text-agro-green">VIDA</span></span>
           <span className="text-xs bg-agro-purple/20 text-agro-purple-light border border-agro-purple/30 px-1.5 py-0.5 rounded-full font-medium hidden sm:inline">TOKEN</span>
         </a>
