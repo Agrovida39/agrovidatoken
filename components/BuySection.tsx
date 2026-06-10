@@ -204,6 +204,25 @@ export default function BuySection() {
         </div>
 
         <div className="max-w-md mx-auto">
+
+          {/* Obtener POL */}
+          <div className="mb-4 bg-agro-dark/60 border border-agro-dark-border rounded-2xl px-5 py-4 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-white text-sm font-semibold">¿No tienes POL?</p>
+              <p className="text-slate-400 text-xs mt-0.5">Cómpralo en un exchange y envíalo a tu wallet</p>
+            </div>
+            <div className="flex gap-2 shrink-0">
+              <a href="https://www.binance.com/es/trade/POL_USDT" target="_blank" rel="noopener noreferrer"
+                className="text-xs bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-400 border border-yellow-500/30 px-3 py-2 rounded-xl font-semibold transition-colors">
+                Binance
+              </a>
+              <a href="https://www.coinbase.com/price/polygon" target="_blank" rel="noopener noreferrer"
+                className="text-xs bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 border border-blue-500/30 px-3 py-2 rounded-xl font-semibold transition-colors">
+                Coinbase
+              </a>
+            </div>
+          </div>
+
           <div className="glass rounded-3xl p-8 card-glow border border-agro-dark-border">
 
             {/* Wallet */}
