@@ -17,7 +17,9 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Token AGROVIDA',
-    description: 'Amazon de salud & bienestar para LatAm. Base: arándanos colombianos. TAM $100B+. Presale Q1 2027.',
+    description: 'Amazon de salud & bienestar para LatAm. Base: arándanos colombianos. TAM $100B+. Presale activa.',
+    site: '@agrovida19',
+    creator: '@agrovida19',
   },
 }
 

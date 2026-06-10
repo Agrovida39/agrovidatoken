@@ -12,6 +12,11 @@ export default function Footer() {
         </p>
 
         <div className="flex gap-4 items-center">
+          <a href="https://x.com/agrovida19" target="_blank" rel="noopener noreferrer"
+            className="hover:text-white transition-colors flex items-center gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            @agrovida19
+          </a>
           <a href="https://t.me/Agro_vida" target="_blank" rel="noopener noreferrer"
             className="hover:text-white transition-colors flex items-center gap-1.5">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
