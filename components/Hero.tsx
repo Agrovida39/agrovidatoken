@@ -19,9 +19,9 @@ export default function Hero() {
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 text-center">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 bg-agro-purple/10 border border-agro-purple/30 rounded-full px-4 py-1.5 text-sm text-agro-purple-light font-medium mb-8">
+        <div className="inline-flex items-center gap-2 bg-agro-green/10 border border-agro-green/30 rounded-full px-4 py-1.5 text-sm text-agro-green-light font-medium mb-8">
           <span className="w-2 h-2 bg-agro-green rounded-full animate-pulse2" />
-          Presale Q1 2027 · Lista de espera abierta
+          🟢 Presale Activa · 1 POL = 75 AGROVIDA
         </div>
 
         {/* Eyebrow */}
@@ -48,11 +48,11 @@ export default function Hero() {
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-          <a href="#waitlist" className="btn-primary flex items-center justify-center gap-2">
-            Reservar lugar en Presale <ArrowRight size={18} />
+          <a href="#comprar" className="btn-primary flex items-center justify-center gap-2">
+            Comprar AGROVIDA Ahora <ArrowRight size={18} />
           </a>
-          <a href="#nft" className="btn-outline flex items-center justify-center gap-2">
-            Ver Membresías NFT
+          <a href="https://agrovidacol.com" target="_blank" rel="noopener noreferrer" className="btn-outline flex items-center justify-center gap-2">
+            Ver Ecosistema Físico <ArrowRight size={18} />
           </a>
         </div>
 

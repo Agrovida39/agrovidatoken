@@ -8,6 +8,7 @@ import ValueLoops from '@/components/ValueLoops'
 import Roadmap from '@/components/Roadmap'
 import BuySection from '@/components/BuySection'
 import Waitlist from '@/components/Waitlist'
+import EcosystemBanner from '@/components/EcosystemBanner'
 import Footer from '@/components/Footer'
 
 export default function Home() {
@@ -23,6 +24,7 @@ export default function Home() {
       <Roadmap />
       <BuySection />
       <Waitlist />
+      <EcosystemBanner />
       <Footer />
     </main>
   )

@@ -3,9 +3,7 @@ export default function Footer() {
     <footer className="border-t border-agro-dark-border py-10 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-agro-green to-agro-purple flex items-center justify-center text-white font-black text-xs">
-            A
-          </div>
+          <img src="/logo-.png" alt="AGROVIDA" className="w-6 h-6 rounded-full object-cover" />
           <span>AGROVIDA Token © {new Date().getFullYear()}</span>
         </div>
 
