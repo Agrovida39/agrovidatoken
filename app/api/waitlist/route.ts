@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/lib/firebase'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 
 const ALLOWED_ROLES = new Set(['comprador', 'productor', 'inversor', 'partner', 'otro'])
 const ALLOWED_TIERS = new Set(['semilla', 'cosecha', 'funghi', 'arandanos', ''])
@@ -80,8 +82,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Membresía inválida.' }, { status: 422 })
   }
 
-  // TODO: persist to database (e.g. Supabase, PlanetScale, or Firebase)
-  // For now, log server-side only (never exposed to client)
+  // Log server-side (never exposed to client)
   console.info('[waitlist]', {
     name: cleanName,
     email: cleanEmail,
@@ -89,6 +90,20 @@ export async function POST(req: NextRequest) {
     tier: cleanTier || 'sin-tier',
     registeredAt: new Date().toISOString(),
   })
+
+  // Persist to Firestore — failure does NOT block the user
+  try {
+    await addDoc(collection(db, 'waitlist_token'), {
+      name: cleanName,
+      email: cleanEmail,
+      role: cleanRole,
+      tier: cleanTier,
+      createdAt: serverTimestamp(),
+      source: 'agrovidatoken.com',
+    })
+  } catch (dbErr) {
+    console.error('[waitlist] Firestore write failed:', dbErr)
+  }
 
   return NextResponse.json({ ok: true }, { status: 201 })
 }
