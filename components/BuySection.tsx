@@ -7,8 +7,8 @@ const PRESALE_ADDRESS = '0xF516f7078d13984651fBE3Fb75A9A0ff0bfd6679'
 const USDT_ADDRESS    = '0xc2132D05D31c914a87C6611C10748AEb04B58e8F' // USDT en Polygon
 const POLYGON_CHAIN_ID = '0x89'
 
-const RATE_MATIC = 10    // 1 MATIC  = 10   AGROVIDA (igual que USDT)
-const RATE_USDT  = 10    // 1 USDT   = 10   AGROVIDA ($0.10/token)
+const RATE_MATIC = 75    // 1 POL = 75 AGROVIDA
+const RATE_USDT  = 1000  // 1 USDT = 1000 AGROVIDA
 
 const MIN_MATIC = 0.1;   const MAX_MATIC = 1000
 const MIN_USDT  = 1;     const MAX_USDT  = 100000
@@ -196,9 +196,9 @@ export default function BuySection() {
             Compra <span className="gradient-text">AGROVIDATOKEN</span> Ahora
           </h2>
           <p className="text-slate-400 mt-4 max-w-xl mx-auto">
-            <strong className="text-white">1 MATIC = {RATE_MATIC.toLocaleString()} AGROVIDATOKEN</strong>
+            <strong className="text-white">1 POL = {RATE_MATIC.toLocaleString()} AGROVIDATOKEN</strong>
             {' · '}
-            <strong className="text-white">1 USDT = {RATE_USDT} AGROVIDATOKEN</strong>
+            <strong className="text-white">1 USDT = {RATE_USDT.toLocaleString()} AGROVIDATOKEN</strong>
             {' · '}Red Polygon
           </p>
         </div>
