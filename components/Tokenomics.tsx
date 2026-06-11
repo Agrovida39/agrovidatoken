@@ -8,26 +8,25 @@ const distribution = [
 ]
 
 const metrics = [
-  { label: 'Supply Total', value: '1B AGROVIDA' },
-  { label: 'Precio Presale', value: '$0.001' },
-  { label: 'Objetivo Presale', value: '$50–75M' },
-  { label: 'Market Cap Año 3', value: '$5–10B' },
-  { label: 'Deflación anual', value: '5–10% burn' },
-  { label: 'Blockchain', value: 'Ethereum / Polygon' },
+  { label: 'Supply Total',     value: '1B AGROVIDA' },
+  { label: 'Precio Presale',   value: '$0.001 USD' },
+  { label: '1 POL =',          value: '75 AGROVIDA' },
+  { label: '1 USDT =',         value: '1,000 AGROVIDA' },
+  { label: 'Burn por transfer', value: '2% automático' },
+  { label: 'Blockchain',       value: 'Polygon Mainnet' },
 ]
 
 const burns = [
-  { source: 'Comisiones marketplace', pct: '3% de cada tx' },
-  { source: 'Renovación membresías', pct: '2% de membresías' },
-  { source: 'Venta de health data', pct: '20% del revenue' },
-  { source: 'Propuestas DAO', pct: 'Pequeño burn/voto' },
+  { source: '2% burn en cada transferencia P2P', pct: 'Automático' },
+  { source: 'Trazabilidad Finca (FincaTraceability)', pct: '0.5–2 AGRO/evento' },
+  { source: 'Comisiones marketplace', pct: 'Próximamente' },
+  { source: 'Propuestas DAO', pct: 'Próximamente' },
 ]
 
 const staking = [
-  { pool: 'Arándanos (hot)', apy: '15%', color: 'text-agro-green' },
-  { pool: 'Proteína Premium', apy: '15%', color: 'text-agro-green' },
-  { pool: 'Suplementos', apy: '10%', color: 'text-agro-purple-light' },
-  { pool: 'Pool General', apy: '8%', color: 'text-slate-400' },
+  { pool: 'Pool General AGROVIDA', apy: '10%', color: 'text-agro-green', live: true },
+  { pool: 'Pool Finca (próximamente)', apy: '12%', color: 'text-agro-purple-light', live: false },
+  { pool: 'Pool Marketplace (próximamente)', apy: '8%', color: 'text-slate-400', live: false },
 ]
 
 export default function Tokenomics() {
@@ -102,12 +101,17 @@ export default function Tokenomics() {
             <div className="space-y-3">
               {staking.map((s) => (
                 <div key={s.pool} className="flex justify-between items-center text-sm">
-                  <span className="text-slate-300">{s.pool}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-slate-300">{s.pool}</span>
+                    {s.live && (
+                      <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded-full" style={{ background: '#22c55e20', color: '#22c55e' }}>LIVE</span>
+                    )}
+                  </div>
                   <span className={`font-bold text-base ${s.color}`}>{s.apy}</span>
                 </div>
               ))}
               <div className="border-t border-agro-dark-border pt-3 text-xs text-slate-500">
-                Yield pagado por comisiones marketplace + pool de membresías + ads de terceros
+                Contrato live en Polygon · <a href="#staking" className="text-agro-green hover:underline">Ir a Staking →</a>
               </div>
             </div>
           </div>

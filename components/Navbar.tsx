@@ -6,8 +6,8 @@ const links = [
   { label: 'Marketplace', href: '#casos' },
   { label: 'NFT', href: '#nft' },
   { label: 'Tokenomics', href: '#tokenomics' },
+  { label: 'Staking 10%', href: '#staking', highlight: true },
   { label: 'Roadmap', href: '#roadmap' },
-  { label: 'Comparativa', href: '#comparativa' },
   { label: '🌿 Ecosistema', href: 'https://agrovidacol.com', external: true },
 ]
 
@@ -28,7 +28,7 @@ export default function Navbar() {
         <div className="hidden lg:flex items-center gap-5">
           {links.map((l) => (
             <a key={l.href} href={l.href} {...(l.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              className={`text-sm font-medium transition-colors ${l.external ? 'text-agro-green hover:text-white' : 'text-slate-400 hover:text-white'}`}>
+              className={`text-sm font-medium transition-colors ${l.external ? 'text-agro-green hover:text-white' : (l as any).highlight ? 'text-amber-400 hover:text-white font-bold' : 'text-slate-400 hover:text-white'}`}>
               {l.label}
             </a>
           ))}

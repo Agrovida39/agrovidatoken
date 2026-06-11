@@ -4,6 +4,7 @@ import MarketComparison from '@/components/MarketComparison'
 import UseCases from '@/components/UseCases'
 import NFTMembership from '@/components/NFTMembership'
 import Tokenomics from '@/components/Tokenomics'
+import StakingSection from '@/components/StakingSection'
 import ValueLoops from '@/components/ValueLoops'
 import Roadmap from '@/components/Roadmap'
 import BuySection from '@/components/BuySection'
@@ -20,6 +21,7 @@ export default function Home() {
       <UseCases />
       <NFTMembership />
       <Tokenomics />
+      <StakingSection />
       <ValueLoops />
       <Roadmap />
       <BuySection />
