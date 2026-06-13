@@ -8,6 +8,14 @@ export const metadata: Metadata = {
     'AGROVIDA es el token de utilidad del super-ecosistema de salud: marketplace de arándanos, hongos, suplementos premium, membresías NFT y servicios de salud en Latinoamérica. TAM $100B+.',
   keywords: 'AGROVIDA, token AGROVIDA, arándanos, funghi, crypto, salud, bienestar, wellness, suplementos, alimentos saludables, LatAm, Colombia, DeFi, NFT, staking, marketplace',
   metadataBase: new URL('https://agrovidatoken.com'),
+  icons: {
+    icon: [
+      { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo-.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    shortcut: '/favicon-32.png',
+  },
   openGraph: {
     title: 'Token AGROVIDA | Amazon de Salud & Bienestar para LatAm',
     description: 'Marketplace de salud & bienestar powered by blockchain. Base: arándanos colombianos. Membresías NFT, staking 15% APY, DAO governance.',
