@@ -8,6 +8,7 @@ const links = [
   { label: 'Tokenomics', href: '#tokenomics' },
   { label: 'Staking 10%', href: '#staking', highlight: true },
   { label: 'Roadmap', href: '#roadmap' },
+  { label: 'Whitepaper', href: '/whitepaper', wp: true },
   { label: '🌿 Ecosistema', href: 'https://agrovidacol.com', external: true },
 ]
 
@@ -27,8 +28,13 @@ export default function Navbar() {
         {/* Desktop links */}
         <div className="hidden lg:flex items-center gap-5">
           {links.map((l) => (
-            <a key={l.href} href={l.href} {...(l.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-              className={`text-sm font-medium transition-colors ${l.external ? 'text-agro-green hover:text-white' : (l as any).highlight ? 'text-amber-400 hover:text-white font-bold' : 'text-slate-400 hover:text-white'}`}>
+            <a key={l.href} href={l.href} {...((l as any).external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              className={`text-sm font-medium transition-colors ${
+                (l as any).external ? 'text-agro-green hover:text-white' :
+                (l as any).highlight ? 'text-amber-400 hover:text-white font-bold' :
+                (l as any).wp ? 'text-agro-purple-light hover:text-white' :
+                'text-slate-400 hover:text-white'
+              }`}>
               {l.label}
             </a>
           ))}
@@ -64,13 +70,9 @@ export default function Navbar() {
             <a href="#comprar" onClick={() => setOpen(false)} className="btn-primary block text-center text-sm">
               Comprar AGROVIDA
             </a>
-            <a href="#waitlist" onClick={() => setOpen(false)} className="block text-center text-sm py-2.5 text-slate-400 hover:text-white">
-              Lista de Espera
-            </a>
           </div>
         </div>
       )}
     </nav>
   )
 }
-
