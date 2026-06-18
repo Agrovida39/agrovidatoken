@@ -32,7 +32,7 @@ export default function Navbar() {
               className={`text-sm font-medium transition-colors ${
                 (l as any).external ? 'text-agro-green hover:text-white' :
                 (l as any).highlight ? 'text-amber-400 hover:text-white font-bold' :
-                (l as any).wp ? 'text-agro-purple-light hover:text-white' :
+                (l as any).wp ? 'text-agro-purple-light hover:text-white font-semibold' :
                 'text-slate-400 hover:text-white'
               }`}>
               {l.label}
@@ -61,12 +61,25 @@ export default function Navbar() {
       {open && (
         <div className="lg:hidden border-t border-agro-dark-border bg-agro-dark px-4 pb-4 pt-2 space-y-1">
           {links.map((l) => (
-            <a key={l.href} href={l.href} onClick={() => setOpen(false)}
-              className="block text-slate-400 hover:text-white py-2.5 text-sm font-medium border-b border-agro-dark-border/50">
-              {l.label}
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={() => setOpen(false)}
+              {...((l as any).external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              className={`block py-2.5 text-sm font-medium border-b border-agro-dark-border/50 ${
+                (l as any).wp ? 'text-agro-purple-light font-bold' :
+                (l as any).highlight ? 'text-amber-400 font-bold' :
+                (l as any).external ? 'text-agro-green' :
+                'text-slate-400 hover:text-white'
+              }`}
+            >
+              {(l as any).wp ? '📄 ' + l.label : l.label}
             </a>
           ))}
           <div className="pt-3 space-y-2">
+            <a href="/whitepaper" className="block text-center text-sm py-2.5 rounded-xl border border-agro-purple-light/40 text-agro-purple-light font-semibold hover:bg-agro-purple/10 transition-colors">
+              📄 Ver Whitepaper
+            </a>
             <a href="#comprar" onClick={() => setOpen(false)} className="btn-primary block text-center text-sm">
               Comprar AGROVIDA
             </a>
