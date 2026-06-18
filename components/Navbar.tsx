@@ -8,7 +8,7 @@ const links = [
   { label: 'Tokenomics', href: '#tokenomics' },
   { label: 'Staking 10%', href: '#staking', highlight: true },
   { label: 'Roadmap', href: '#roadmap' },
-  { label: 'Whitepaper', href: '/whitepaper', wp: true },
+  { label: '📄 Whitepaper', href: '/whitepaper', wp: true },
   { label: '🌿 Ecosistema', href: 'https://agrovidacol.com', external: true },
 ]
 
@@ -73,13 +73,10 @@ export default function Navbar() {
                 'text-slate-400 hover:text-white'
               }`}
             >
-              {(l as any).wp ? '📄 ' + l.label : l.label}
+              {l.label}
             </a>
           ))}
-          <div className="pt-3 space-y-2">
-            <a href="/whitepaper" className="block text-center text-sm py-2.5 rounded-xl border border-agro-purple-light/40 text-agro-purple-light font-semibold hover:bg-agro-purple/10 transition-colors">
-              📄 Ver Whitepaper
-            </a>
+          <div className="pt-3">
             <a href="#comprar" onClick={() => setOpen(false)} className="btn-primary block text-center text-sm">
               Comprar AGROVIDA
             </a>
