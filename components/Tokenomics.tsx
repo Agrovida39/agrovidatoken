@@ -18,7 +18,7 @@ const metrics = [
 
 const burns = [
   { source: '2% burn en cada transferencia P2P', pct: 'Automático' },
-  { source: 'Trazabilidad Finca (FincaTraceability)', pct: '0.5–2 AGRO/evento' },
+  { source: 'Trazabilidad Finca (FincaTraceability)', pct: '50 AGRO/evento' },
   { source: 'Comisiones marketplace', pct: 'Próximamente' },
   { source: 'Propuestas DAO', pct: 'Próximamente' },
 ]
