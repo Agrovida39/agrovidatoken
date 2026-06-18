@@ -83,6 +83,80 @@ export default function NFTMembership() {
           </p>
         </div>
 
+        {/* NFT Planta de Arándano — Activo Real */}
+        <div className="mb-10 relative bg-gradient-to-br from-[#0d1f12] to-[#0a1628] border border-agro-green/30 rounded-3xl p-6 sm:p-8 overflow-hidden">
+          {/* Fondo decorativo */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-agro-green/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative grid md:grid-cols-2 gap-8 items-center">
+            {/* Izquierda: info */}
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-5xl">🫐</span>
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-agro-green/20 text-agro-green border border-agro-green/30">
+                    NFT Activo Real · Edición Limitada
+                  </span>
+                  <h3 className="text-white font-black text-2xl sm:text-3xl mt-1">Planta de Arándano</h3>
+                </div>
+              </div>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                Adquiere plantas de arándano reales cultivadas en los invernaderos de Agrovida. Nosotros administramos todo el proceso de crecimiento y cosecha. <span className="text-white font-semibold">La fruta que produzcan es tuya.</span>
+              </p>
+
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <div className="bg-agro-dark/60 border border-agro-dark-border rounded-xl p-3">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-wider mb-1">Precio por planta</p>
+                  <p className="text-white font-black text-xl">$50 <span className="text-slate-400 text-sm font-normal">USD</span></p>
+                </div>
+                <div className="bg-agro-dark/60 border border-agro-dark-border rounded-xl p-3">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-wider mb-1">Lote mínimo</p>
+                  <p className="text-white font-black text-xl">50 <span className="text-slate-400 text-sm font-normal">plantas</span></p>
+                </div>
+                <div className="bg-agro-dark/60 border border-agro-dark-border rounded-xl p-3">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-wider mb-1">Inversión mínima</p>
+                  <p className="text-agro-green font-black text-xl">$2,500 <span className="text-slate-400 text-sm font-normal">USD</span></p>
+                </div>
+                <div className="bg-agro-dark/60 border border-agro-dark-border rounded-xl p-3">
+                  <p className="text-slate-500 text-[10px] uppercase tracking-wider mb-1">Descuento ecosistema</p>
+                  <p className="text-agro-gold font-black text-xl">15% <span className="text-slate-400 text-sm font-normal">con AGRO</span></p>
+                </div>
+              </div>
+
+              <a
+                href="#waitlist?tier=planta-arandano"
+                className="inline-block w-full text-center bg-agro-green text-black font-black py-3 rounded-2xl hover:bg-green-400 transition-all text-sm"
+              >
+                Reservar mis plantas 🫐 →
+              </a>
+            </div>
+
+            {/* Derecha: beneficios */}
+            <div className="space-y-3">
+              <h4 className="text-slate-400 text-xs font-black uppercase tracking-widest mb-4">¿Cómo funciona?</h4>
+              {[
+                { icon: '🏡', title: 'Cultivo en invernadero', desc: 'Tus plantas crecen en los invernaderos certificados de Agrovida con control total de calidad.' },
+                { icon: '⚙️', title: 'Agrovida administra todo', desc: 'Riego, nutrición, poda, control de plagas y cosecha. Tú no tienes que hacer nada.' },
+                { icon: '🍇', title: 'La fruta es tuya', desc: 'Toda la producción de tus plantas te pertenece. Puedes recibirla, venderla o donarla.' },
+                { icon: '💰', title: '% de administración', desc: 'Agrovida cobra un porcentaje justo por la gestión integral. El resto de la rentabilidad es tuya.' },
+                { icon: '🔗', title: 'NFT en Polygon', desc: 'Cada lote de plantas es un NFT transferible. Puedes vender tu posición en el marketplace.' },
+                { icon: '🪙', title: 'Descuento con AGRO', desc: '15% de descuento adicional en todo el ecosistema Agrovida usando tokens AGRO.' },
+              ].map((b) => (
+                <div key={b.title} className="flex gap-3 items-start bg-agro-dark/40 border border-agro-dark-border rounded-xl p-3">
+                  <span className="text-xl flex-shrink-0">{b.icon}</span>
+                  <div>
+                    <p className="text-white text-sm font-semibold">{b.title}</p>
+                    <p className="text-slate-400 text-xs leading-relaxed">{b.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Membresías de descuento */}
+        <h3 className="text-white font-bold text-lg mb-6 text-center">Membresías de Salud & Descuentos</h3>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {tiers.map((t) => (
             <div
