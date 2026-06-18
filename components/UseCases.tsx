@@ -3,25 +3,49 @@ const categories = [
     title: 'Alimentos Agrovida',
     icon: '🌱',
     color: 'border-agro-green',
-    items: ['Arándanos, moras, frambuesas', 'Setas (oyster, shiitake, king trumpet)', 'Frutas tropicales premium', 'Verduras orgánicas', 'Granos ancestrales'],
+    items: [
+      'Arándanos, moras, frambuesas',
+      'Setas (oyster, shiitake, king trumpet)',
+      'Hongos medicinales: Melena de León, Cordyceps',
+      'Frutas tropicales premium',
+      'Verduras orgánicas · Granos ancestrales',
+    ],
   },
   {
     title: 'Procesados Premium',
     icon: '🥛',
     color: 'border-agro-purple',
-    items: ['Proteína vegetal en polvo', 'Barras de proteína', 'Snacks healthy / chips de frutas', 'Néctares cold-press', 'Chocolates 70%+ cacao'],
+    items: [
+      'Proteína vegetal con arándanos (polvo)',
+      'Barras de proteína con superfruits',
+      'Snacks healthy / chips de frutas',
+      'Néctares cold-press de arándano',
+      'Chocolates 70%+ cacao con hongos',
+    ],
   },
   {
-    title: 'Suplementos',
-    icon: '💊',
+    title: 'Suplementos Medicinales',
+    icon: '🍄',
     color: 'border-sky-400',
-    items: ['Vitaminas (D3, B12, etc.)', 'Omega 3 · Probióticos · Colágeno', 'Curcumina · Ashwagandha', 'Adaptógenos (rhodiola, ginseng)', 'Nootrópicos naturales'],
+    items: [
+      'Melena de León (neuroprotección, memoria)',
+      'Cordyceps (energía, rendimiento físico)',
+      'Reishi · Chaga · Turkey Tail',
+      'Curcumina · Ashwagandha · Adaptógenos',
+      'Omega 3 · Probióticos · Nootrópicos naturales',
+    ],
   },
   {
     title: 'Wellness & Servicios',
     icon: '🧬',
     color: 'border-agro-gold',
-    items: ['Membresías NFT (Semilla → Arándanos)', 'Consultas con nutricionistas', 'Planes de nutrición con IA', 'Kit de prueba genética (Funghi+)', 'Integración Oura / Apple Health'],
+    items: [
+      'Membresías NFT (Semilla → Arándanos)',
+      'Protocolos de hongos medicinales personalizados',
+      'Consultas con nutricionistas / micólogos',
+      'Planes de nutrición con IA',
+      'Integración Oura / Apple Health',
+    ],
   },
 ]
 
@@ -74,7 +98,7 @@ export default function UseCases() {
             Un Marketplace para Todo el Ecosistema
           </h2>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            200+ productos en 4 categorías. 6 tipos de actores que generan demanda de Token AGROVIDA en cada transacción.
+            200+ productos en 4 categorías. Alimentos funcionales, hongos medicinales y suplementos con respaldo científico.
           </p>
         </div>
 
