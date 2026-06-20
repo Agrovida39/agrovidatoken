@@ -1,4 +1,5 @@
 import { ArrowRight, Leaf, TrendingUp, Users, ShoppingBag } from 'lucide-react'
+import AgroLivePrice from './AgroLivePrice'
 
 export default function Hero() {
   return (
@@ -45,6 +46,11 @@ export default function Hero() {
           todo pagado y recompensado en <strong className="text-agro-green">Token AGROVIDA</strong>.{' '}
           Mercado objetivo: <strong className="text-white">$100B+</strong> en LatAm.
         </p>
+
+        {/* Precio en vivo */}
+        <div className="flex justify-center mb-8">
+          <AgroLivePrice variant="hero" />
+        </div>
 
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">

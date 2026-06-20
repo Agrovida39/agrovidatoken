@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
+import AgroLivePrice from './AgroLivePrice'
 
 const links = [
   { label: 'Marketplace', href: '#casos' },
@@ -36,6 +37,7 @@ export default function Navbar() {
 
         {/* CTA desktop */}
         <div className="hidden lg:flex items-center gap-2">
+          <AgroLivePrice />
           <a href="https://app.uniswap.org/explore/tokens/polygon/0xfb172a5f2dd76ea03d225e78cfcc2f21773aedf5" target="_blank" rel="noopener noreferrer"
             className="text-sm border border-agro-purple/40 text-agro-purple-light hover:bg-agro-purple/10 px-3 py-2 rounded-xl font-medium transition-colors">
             Uniswap ↗
